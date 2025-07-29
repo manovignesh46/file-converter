@@ -1,6 +1,6 @@
 'use client'
 
-import { JobProgress } from '../app/page'
+import { JobProgress } from '../types'
 
 // Simple icon components
 const X = ({ className }: { className?: string }) => (

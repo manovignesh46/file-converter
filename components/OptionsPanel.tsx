@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ConversionOptions } from '../app/page'
+import { ConversionOptions } from '../types'
 
 // Simple icon components as fallbacks
 const Settings = ({ className }: { className?: string }) => (

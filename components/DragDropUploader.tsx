@@ -22,7 +22,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import PreviewCard from './PreviewCard'
-import { ImageFile, ConversionOptions } from '../app/page'
+import { ImageFile, ConversionOptions } from '../types'
 
 // Simple icon components
 const Upload = ({ className }: { className?: string }) => (

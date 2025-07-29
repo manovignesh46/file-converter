@@ -1,6 +1,6 @@
 'use client'
 
-import { ImageFile, ConversionOptions } from '../app/page'
+import { ImageFile, ConversionOptions } from '../types'
 
 // Simple icon components
 const X = ({ className }: { className?: string }) => (
