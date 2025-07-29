@@ -1,0 +1,167 @@
+'use client'
+
+import { useState } from 'react'
+import DragDropUploader from '../components/DragDropUploader'
+import OptionsPanel from '../components/OptionsPanel'
+import ProgressModal from '../components/ProgressModal'
+import ResultsView from '../components/ResultsView'
+import Header from '../components/Header'
+
+export interface ImageFile {
+  id: string
+  file: File
+  preview: string
+  originalSize: number
+  estimatedSize?: number
+  order: number
+}
+
+export interface ConversionOptions {
+  operation: 'compress' | 'resize' | 'convert' | 'pdf' | 'watermark'
+  compressionQuality?: number
+  targetSize?: number
+  targetSizeUnit?: 'KB' | 'MB'
+  resizeWidth?: number
+  resizeHeight?: number
+  maintainAspectRatio?: boolean
+  cropToFit?: boolean
+  outputFormat?: 'jpg' | 'png' | 'webp'
+  removeMetadata?: boolean
+  watermarkText?: string
+  watermarkPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center'
+}
+
+export interface JobProgress {
+  id: string
+  status: 'pending' | 'processing' | 'completed' | 'error'
+  progress: number
+  message: string
+  outputFiles?: string[]
+}
+
+export default function Home() {
+  const [images, setImages] = useState<ImageFile[]>([])
+  const [options, setOptions] = useState<ConversionOptions>({
+    operation: 'compress',
+    compressionQuality: 80,
+  })
+  const [currentJob, setCurrentJob] = useState<JobProgress | null>(null)
+  const [results, setResults] = useState<string[]>([])
+
+  const handleImagesChange = (newImages: ImageFile[]) => {
+    setImages(newImages)
+  }
+
+  const handleOptionsChange = (newOptions: ConversionOptions) => {
+    setOptions(newOptions)
+  }
+
+  const handleProcess = async () => {
+    if (images.length === 0) return
+
+    const jobId = Date.now().toString()
+    setCurrentJob({
+      id: jobId,
+      status: 'processing',
+      progress: 0,
+      message: 'Starting processing...',
+    })
+
+    try {
+      const formData = new FormData()
+      images.forEach((img, index) => {
+        formData.append('images', img.file)
+        formData.append(`order_${index}`, img.order.toString())
+      })
+      formData.append('options', JSON.stringify(options))
+
+      const response = await fetch('/api/process', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error('Processing failed')
+      }
+
+      const result = await response.json()
+      
+      setCurrentJob({
+        id: jobId,
+        status: 'completed',
+        progress: 100,
+        message: 'Processing completed!',
+        outputFiles: result.files,
+      })
+
+      setResults(result.files)
+    } catch (error) {
+      setCurrentJob({
+        id: jobId,
+        status: 'error',
+        progress: 0,
+        message: 'Processing failed. Please try again.',
+      })
+    }
+  }
+
+  const clearJob = () => {
+    setCurrentJob(null)
+  }
+
+  const clearResults = () => {
+    setResults([])
+    setImages([])
+  }
+
+  return (
+    <main className="min-h-screen">
+      <Header />
+      
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Professional Image Converter
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Convert, compress, resize, and process your images with our powerful online tool. 
+            Drag, drop, and transform your images in seconds.
+          </p>
+        </div>
+
+        {results.length > 0 ? (
+          <ResultsView 
+            files={results} 
+            onStartNew={clearResults}
+          />
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <DragDropUploader 
+                images={images}
+                onImagesChange={handleImagesChange}
+                options={options}
+              />
+            </div>
+            
+            <div className="lg:col-span-1">
+              <OptionsPanel 
+                options={options}
+                onOptionsChange={handleOptionsChange}
+                onProcess={handleProcess}
+                canProcess={images.length > 0}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {currentJob && (
+        <ProgressModal 
+          job={currentJob}
+          onClose={clearJob}
+        />
+      )}
+    </main>
+  )
+}

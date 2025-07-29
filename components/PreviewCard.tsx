@@ -1,0 +1,137 @@
+'use client'
+
+import { ImageFile, ConversionOptions } from '../app/page'
+
+// Simple icon components
+const X = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+)
+
+const FileImage = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <polyline points="14,2 14,8 20,8"></polyline>
+    <circle cx="10" cy="13" r="2"></circle>
+    <path d="m20 17-1.1-1.1a2 2 0 0 0-2.83.02L14 18"></path>
+  </svg>
+)
+
+interface PreviewCardProps {
+  image: ImageFile
+  onRemove: (id: string) => void
+  options: ConversionOptions
+}
+
+export default function PreviewCard({ image, onRemove, options }: PreviewCardProps) {
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
+  const getCompressionRatio = (): number => {
+    if (!image.estimatedSize) return 0
+    return Math.round((1 - image.estimatedSize / image.originalSize) * 100)
+  }
+
+  const getCompressionColor = (): string => {
+    const ratio = getCompressionRatio()
+    if (ratio >= 50) return 'text-green-600'
+    if (ratio >= 25) return 'text-yellow-600'
+    if (ratio >= 0) return 'text-blue-600'
+    return 'text-red-600'
+  }
+
+  return (
+    <div className="relative bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden group hover:shadow-md transition-all duration-200">
+      {/* Image Preview */}
+      <div className="aspect-square bg-gray-100 relative overflow-hidden">
+        <img
+          src={image.preview}
+          alt={image.file.name}
+          className="w-full h-full object-cover"
+          onLoad={() => URL.revokeObjectURL(image.preview)}
+        />
+        
+        {/* Remove Button */}
+        <button
+          onClick={() => onRemove(image.id)}
+          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          title="Remove image"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Order Badge */}
+        <div className="absolute top-2 left-2 bg-primary-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+          #{image.order + 1}
+        </div>
+      </div>
+
+      {/* File Info */}
+      <div className="p-3">
+        <div className="mb-2">
+          <h3 className="text-sm font-medium text-gray-900 truncate" title={image.file.name}>
+            {image.file.name}
+          </h3>
+          <p className="text-xs text-gray-500 mt-1">
+            {image.file.type} • {formatFileSize(image.originalSize)}
+          </p>
+        </div>
+
+        {/* Size Comparison */}
+        {image.estimatedSize && image.estimatedSize !== image.originalSize && (
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-500">Original:</span>
+              <span className="font-medium">{formatFileSize(image.originalSize)}</span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-500">Estimated:</span>
+              <span className="font-medium text-primary-600">
+                {formatFileSize(image.estimatedSize)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-500">Compression:</span>
+              <span className={`font-medium ${getCompressionColor()}`}>
+                {getCompressionRatio() >= 0 ? '-' : '+'}{Math.abs(getCompressionRatio())}%
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Processing Indicator */}
+        {options.operation && (
+          <div className="mt-2 pt-2 border-t border-gray-100">
+            <div className="flex items-center text-xs text-gray-500">
+              <FileImage className="w-3 h-3 mr-1" />
+              <span className="capitalize">{options.operation}</span>
+              {options.operation === 'compress' && options.compressionQuality && (
+                <span className="ml-1">({options.compressionQuality}%)</span>
+              )}
+              {options.operation === 'resize' && (options.resizeWidth || options.resizeHeight) && (
+                <span className="ml-1">
+                  ({options.resizeWidth || '?'} × {options.resizeHeight || '?'})
+                </span>
+              )}
+              {options.operation === 'convert' && options.outputFormat && (
+                <span className="ml-1 uppercase">→ {options.outputFormat}</span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Progress Bar Placeholder */}
+        <div className="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-full bg-primary-500 rounded-full transition-all duration-300" style={{ width: '0%' }} />
+        </div>
+      </div>
+    </div>
+  )
+}
