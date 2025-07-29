@@ -118,12 +118,12 @@ export default function Home() {
     <main className="min-h-screen">
       <Header />
       
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Professional Image Converter
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 max-w-7xl">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-gray-900 mb-4">
+            File Converter Pro
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
             Convert, compress, resize, and process your images with our powerful online tool. 
             Drag, drop, and transform your images in seconds.
           </p>
@@ -136,8 +136,8 @@ export default function Home() {
             isCleaningUp={isCleaningUp}
           />
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
+          <div className="flex flex-col xl:grid xl:grid-cols-4 gap-6 lg:gap-8 max-w-6xl mx-auto">
+            <div className="xl:col-span-3 order-1">
               <DragDropUploader 
                 images={images}
                 onImagesChange={handleImagesChange}
@@ -145,7 +145,7 @@ export default function Home() {
               />
             </div>
             
-            <div className="lg:col-span-1">
+            <div className="xl:col-span-1 order-2">
               <OptionsPanel 
                 options={options}
                 onOptionsChange={handleOptionsChange}

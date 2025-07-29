@@ -10,6 +10,13 @@ export const metadata = {
   description: 'Convert, compress, resize, and process images with our powerful online tool',
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 export default function RootLayout({
   children,
 }: {

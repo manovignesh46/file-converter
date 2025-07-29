@@ -145,23 +145,23 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
   }, [images.length, fileTypes.hasImages, fileTypes.hasPDFs, availableOperations, options.operation, updateOption])
 
   return (
-    <div className="card sticky top-4">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Processing Options</h2>
-        <p className="text-gray-600">Choose how you want to process your images</p>
+    <div className="card sticky top-4 h-fit">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Processing Options</h2>
+        <p className="text-sm sm:text-base text-gray-600">Choose how you want to process your images</p>
       </div>
 
       {images.length > 0 ? (
         <>
           {/* Operation Type */}
-          <div className="mb-6">
+          <div className="mb-4 sm:mb-6">
             <label className="block text-sm font-medium text-gray-700 mb-3">
               Operation Type
             </label>
             
             {/* File type indicator */}
             {images.length > 0 && (
-              <div className="mb-3 text-sm text-gray-600">
+              <div className="mb-3 text-xs sm:text-sm text-gray-600 p-2 bg-gray-50 rounded-lg">
                 {fileTypes.hasImages && fileTypes.hasPDFs 
                   ? `${fileTypes.imageCount} image(s) and ${fileTypes.pdfCount} PDF(s) selected`
                   : fileTypes.hasImages 
@@ -171,7 +171,7 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
               </div>
             )}
 
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-2 sm:gap-3">
               {availableOperations.map((op) => {
                 const IconComponent = op.icon || Settings
 
@@ -179,22 +179,22 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                   <button
                     key={op.value}
                     onClick={() => updateOption('operation', op.value)}
-                    className={`flex items-center p-3 rounded-lg border-2 transition-all text-left ${
+                    className={`flex items-center p-3 sm:p-4 rounded-lg border-2 transition-all text-left ${
                       options.operation === op.value
                         ? 'border-primary-500 bg-primary-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <IconComponent className={`w-5 h-5 mr-3 ${
+                    <IconComponent className={`w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0 ${
                       options.operation === op.value ? 'text-primary-600' : 'text-gray-400'
                     }`} />
-                    <div>
-                      <div className={`font-medium ${
+                    <div className="min-w-0 flex-1">
+                      <div className={`font-medium text-sm sm:text-base ${
                         options.operation === op.value ? 'text-primary-900' : 'text-gray-900'
                       }`}>
                         {op.label}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-xs sm:text-sm text-gray-500">
                         {op.desc}
                       </div>
                     </div>
@@ -206,10 +206,10 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
 
           {/* Compression Options */}
           {options.operation === 'compress' && (
-            <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
               <h3 className="font-medium text-gray-900 mb-3">Compression Settings</h3>
               
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Quality: {options.compressionQuality}%
@@ -220,7 +220,7 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                     max="100"
                     value={options.compressionQuality || 80}
                     onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
-                    className="w-full"
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                   />
                   <div className="flex justify-between text-xs text-gray-500 mt-1">
                     <span>Smallest</span>
@@ -242,9 +242,9 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                         updateOption('targetSizeUnit', 'KB')
                       }
                     }}
-                    className="rounded"
+                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
                   />
-                  <label htmlFor="targetSize" className="text-sm text-gray-700">
+                  <label htmlFor="targetSize" className="text-xs sm:text-sm text-gray-700 cursor-pointer">
                     Target specific size
                   </label>
                 </div>
@@ -255,13 +255,14 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                       type="number"
                       value={options.targetSize}
                       onChange={(e) => updateOption('targetSize', parseInt(e.target.value))}
-                      className="input-field flex-1"
+                      className="input-field flex-1 text-sm"
                       min="1"
+                      placeholder="Size"
                     />
                     <select
                       value={options.targetSizeUnit}
                       onChange={(e) => updateOption('targetSizeUnit', e.target.value)}
-                      className="input-field"
+                      className="input-field text-sm w-20"
                     >
                       <option value="KB">KB</option>
                       <option value="MB">MB</option>
@@ -310,9 +311,9 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                         updateOption('targetSizeUnit', undefined)
                       }
                     }}
-                    className="rounded"
+                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
                   />
-                  <label htmlFor="pdfTargetSize" className="text-sm text-gray-700">
+                  <label htmlFor="pdfTargetSize" className="text-sm text-gray-700 cursor-pointer">
                     Target file size
                   </label>
                 </div>
@@ -348,9 +349,9 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                     id="optimizeImages"
                     checked={options.optimizeImages || false}
                     onChange={(e) => updateOption('optimizeImages', e.target.checked)}
-                    className="rounded"
+                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
                   />
-                  <label htmlFor="optimizeImages" className="text-sm text-gray-700">
+                  <label htmlFor="optimizeImages" className="text-sm text-gray-700 cursor-pointer">
                     Optimize embedded images
                   </label>
                 </div>
@@ -397,9 +398,9 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                     id="maintainAspect"
                     checked={options.maintainAspectRatio !== false}
                     onChange={(e) => updateOption('maintainAspectRatio', e.target.checked)}
-                    className="rounded"
+                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
                   />
-                  <label htmlFor="maintainAspect" className="text-sm text-gray-700">
+                  <label htmlFor="maintainAspect" className="text-sm text-gray-700 cursor-pointer">
                     Maintain aspect ratio
                   </label>
                 </div>
@@ -410,9 +411,9 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                     id="cropToFit"
                     checked={options.cropToFit || false}
                     onChange={(e) => updateOption('cropToFit', e.target.checked)}
-                    className="rounded"
+                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
                   />
-                  <label htmlFor="cropToFit" className="text-sm text-gray-700">
+                  <label htmlFor="cropToFit" className="text-sm text-gray-700 cursor-pointer">
                     Crop to fit (instead of letterbox)
                   </label>
                 </div>
@@ -563,9 +564,9 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                     id="removeMetadata"
                     checked={options.removeMetadata || false}
                     onChange={(e) => updateOption('removeMetadata', e.target.checked)}
-                    className="rounded"
+                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
                   />
-                  <label htmlFor="removeMetadata" className="text-sm text-gray-700">
+                  <label htmlFor="removeMetadata" className="text-sm text-gray-700 cursor-pointer">
                     Remove metadata (EXIF/GPS data)
                   </label>
                 </div>
@@ -577,7 +578,7 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
           <button
             onClick={onProcess}
             disabled={!canProcess}
-            className={`w-full py-3 px-4 rounded-lg font-medium transition-all ${
+            className={`w-full py-3 sm:py-4 px-4 rounded-lg font-medium transition-all text-sm sm:text-base ${
               canProcess
                 ? 'bg-primary-500 hover:bg-primary-600 text-white'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -592,14 +593,14 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                 if (options.operation === 'pdf') IconComponent = FileImage
                 if (options.operation === 'pdf-compress') IconComponent = FileMinus
                 if (options.operation === 'watermark') IconComponent = Type
-                return <IconComponent className="w-5 h-5 mr-2" />
+                return <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               })()}
               {options.operation === 'pdf-compress' ? 'Process PDFs' : 'Process Images'}
             </div>
           </button>
 
           {!canProcess && (
-            <p className="text-sm text-gray-500 text-center mt-2">
+            <p className="text-xs sm:text-sm text-gray-500 text-center mt-2">
               Upload images to start processing
             </p>
           )}

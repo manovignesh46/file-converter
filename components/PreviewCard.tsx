@@ -64,7 +64,7 @@ export default function PreviewCard({ image, onRemove, options }: PreviewCardPro
         {image.isPdf ? (
           <div className="w-full h-full flex items-center justify-center bg-red-50">
             <div className="text-center">
-              <FileText className="w-12 h-12 text-red-600 mx-auto mb-2" />
+              <FileText className="w-8 h-8 sm:w-12 sm:h-12 text-red-600 mx-auto mb-1 sm:mb-2" />
               <span className="text-xs text-red-600 font-medium">PDF</span>
             </div>
           </div>
@@ -80,22 +80,24 @@ export default function PreviewCard({ image, onRemove, options }: PreviewCardPro
         {/* Remove Button */}
         <button
           onClick={() => onRemove(image.id)}
-          className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+          className="absolute top-1 sm:top-2 right-1 sm:right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 sm:p-1.5 
+                     opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200 touch-manipulation"
           title="Remove image"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3 h-3 sm:w-4 sm:h-4" />
         </button>
 
         {/* Order Badge */}
-        <div className="absolute top-2 left-2 bg-primary-500 text-white text-xs px-2 py-1 rounded-full font-medium">
+        <div className="absolute top-1 sm:top-2 left-1 sm:left-2 bg-primary-500 text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 
+                        rounded-full font-medium">
           #{image.order + 1}
         </div>
       </div>
 
       {/* File Info */}
-      <div className="p-3">
-        <div className="mb-2">
-          <h3 className="text-sm font-medium text-gray-900 truncate" title={image.file.name}>
+      <div className="p-2 sm:p-3">
+        <div className="mb-1 sm:mb-2">
+          <h3 className="text-xs sm:text-sm font-medium text-gray-900 truncate" title={image.file.name}>
             {image.file.name}
           </h3>
           <p className="text-xs text-gray-500 mt-1">
@@ -127,27 +129,27 @@ export default function PreviewCard({ image, onRemove, options }: PreviewCardPro
 
         {/* Processing Indicator */}
         {options.operation && (
-          <div className="mt-2 pt-2 border-t border-gray-100">
+          <div className="mt-1 sm:mt-2 pt-1 sm:pt-2 border-t border-gray-100">
             <div className="flex items-center text-xs text-gray-500">
-              <FileImage className="w-3 h-3 mr-1" />
-              <span className="capitalize">{options.operation}</span>
+              <FileImage className="w-3 h-3 mr-1 flex-shrink-0" />
+              <span className="capitalize truncate">{options.operation}</span>
               {options.operation === 'compress' && options.compressionQuality && (
-                <span className="ml-1">({options.compressionQuality}%)</span>
+                <span className="ml-1 text-xs">({options.compressionQuality}%)</span>
               )}
               {options.operation === 'resize' && (options.resizeWidth || options.resizeHeight) && (
-                <span className="ml-1">
+                <span className="ml-1 text-xs truncate">
                   ({options.resizeWidth || '?'} × {options.resizeHeight || '?'})
                 </span>
               )}
               {options.operation === 'convert' && options.outputFormat && (
-                <span className="ml-1 uppercase">→ {options.outputFormat}</span>
+                <span className="ml-1 text-xs uppercase">→ {options.outputFormat}</span>
               )}
             </div>
           </div>
         )}
 
         {/* Progress Bar Placeholder */}
-        <div className="mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
+        <div className="mt-1 sm:mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
           <div className="h-full bg-primary-500 rounded-full transition-all duration-300" style={{ width: '0%' }} />
         </div>
       </div>

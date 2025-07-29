@@ -105,38 +105,38 @@ export default function ProgressModal({ job, onClose }: ProgressModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
-        <div className="p-6">
+      <div className="bg-white rounded-xl shadow-xl max-w-md sm:max-w-lg w-full max-h-[80vh] overflow-y-auto">
+        <div className="p-4 sm:p-6">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Processing Images</h2>
+          <div className="flex items-center justify-between mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-900">Processing Images</h2>
             {job.status !== 'processing' && (
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             )}
           </div>
 
           {/* Status */}
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-3 sm:mb-4">
             {getStatusIcon()}
-            <div className="ml-3">
+            <div className="ml-3 min-w-0 flex-1">
               <p className="text-sm font-medium text-gray-900">
                 {job.status === 'processing' && 'Processing...'}
                 {job.status === 'completed' && 'Completed Successfully!'}
                 {job.status === 'error' && 'Processing Failed'}
                 {job.status === 'pending' && 'Preparing...'}
               </p>
-              <p className="text-sm text-gray-500">{job.message}</p>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">{job.message}</p>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="mb-6">
-            <div className="flex justify-between text-sm text-gray-600 mb-2">
+          <div className="mb-4 sm:mb-6">
+            <div className="flex justify-between text-xs sm:text-sm text-gray-600 mb-2">
               <span>Progress</span>
               <span>{job.progress}%</span>
             </div>

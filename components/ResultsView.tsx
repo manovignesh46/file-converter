@@ -176,37 +176,38 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
 
 
   return (
-    <div className="card">
-      <div className="text-center mb-8">
-        <div className="bg-green-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-          <FileImage className="w-8 h-8 text-green-600" />
+    <div className="card max-w-6xl mx-auto">
+      <div className="text-center mb-6 sm:mb-8">
+        <div className="bg-green-100 p-3 sm:p-4 rounded-full w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+          <FileImage className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
           Processing Complete!
         </h2>
-        <p className="text-gray-600">
+        <p className="text-sm sm:text-base text-gray-600 px-4">
           Your {files.length} image{files.length !== 1 ? 's have' : ' has'} been successfully processed.
         </p>
       </div>
 
       {/* Results Grid */}
-      <div className="space-y-4 mb-8">
+      <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900">
             Processed Files ({files.length})
           </h3>
-          <div className="flex space-x-2">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
             <button
               onClick={handleDownloadAll}
-              className="btn-secondary flex items-center"
+              className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-2 flex items-center justify-center"
             >
-              <Archive className="w-4 h-4 mr-2" />
-              Download All (ZIP)
+              <Archive className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Download All (ZIP)</span>
+              <span className="sm:hidden">All ZIP</span>
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto">
           {files.map((file, index) => {
             const fileName = getFileName(file)
             const hasError = imageErrors[fileName] || false

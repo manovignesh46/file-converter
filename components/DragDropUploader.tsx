@@ -235,11 +235,11 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
 
   return (
     <div className="card">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+      <div className="mb-4 sm:mb-6">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
           {options.operation === 'pdf-compress' ? 'Upload PDFs' : 'Upload Images'}
         </h2>
-        <p className="text-gray-600">
+        <p className="text-sm sm:text-base text-gray-600">
           {options.operation === 'pdf-compress' 
             ? 'Drag and drop your PDF files here, or click to select files.'
             : 'Drag and drop your images here, or click to select files. You can reorder them by dragging.'
@@ -249,24 +249,25 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
 
       <div
         {...getRootProps()}
-        className={`drag-zone ${isDragActive ? 'active' : ''} ${images.length > 0 ? 'mb-6' : ''}`}
+        className={`drag-zone ${isDragActive ? 'active' : ''} ${images.length > 0 ? 'mb-4 sm:mb-6' : ''} 
+                   p-6 sm:p-8 cursor-pointer`}
       >
         <input {...getInputProps()} />
         <div className="flex flex-col items-center">
-          <div className="bg-primary-100 p-4 rounded-full mb-4">
+          <div className="bg-primary-100 p-3 sm:p-4 rounded-full mb-3 sm:mb-4">
             {isDragActive ? (
-              <Upload className="w-8 h-8 text-primary-600 animate-bounce-light" />
+              <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600 animate-bounce-light" />
             ) : (
-              <ImageIcon className="w-8 h-8 text-primary-600" />
+              <ImageIcon className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" />
             )}
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 text-center">
             {isDragActive 
               ? (options.operation === 'pdf-compress' ? 'Drop PDFs here' : 'Drop images here')
               : (options.operation === 'pdf-compress' ? 'Upload your PDFs' : 'Upload your images')
             }
           </h3>
-          <p className="text-gray-500 text-center">
+          <p className="text-sm sm:text-base text-gray-500 text-center px-4">
             {isDragActive 
               ? 'Release to upload your files'
               : (options.operation === 'pdf-compress' 
@@ -275,7 +276,7 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
                 )
             }
           </p>
-          <p className="text-sm text-gray-400 mt-2">
+          <p className="text-xs sm:text-sm text-gray-400 mt-2 text-center px-4">
             Supports: JPG, PNG, WebP, GIF, BMP, PDF (Max 50MB per file)
           </p>
         </div>
@@ -283,8 +284,8 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
 
       {images.length > 0 && (
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
               {options.operation === 'pdf-compress' 
                 ? `Uploaded PDFs (${images.length})`
                 : `Uploaded Images (${images.length})`
@@ -292,7 +293,7 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
             </h3>
             <button
               onClick={() => onImagesChange([])}
-              className="text-red-500 hover:text-red-700 text-sm font-medium"
+              className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 rounded"
             >
               Clear All
             </button>
@@ -304,7 +305,7 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
             onDragEnd={handleDragEnd}
           >
             <SortableContext items={images.map(img => img.id)} strategy={verticalListSortingStrategy}>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-6">
                 {images.map((image) => (
                   <SortableItem
                     key={image.id}
@@ -318,20 +319,20 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
             </SortableContext>
           </DndContext>
           
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between text-sm">
+          <div className="mt-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center justify-between text-xs sm:text-sm mb-1">
               <span className="text-gray-600">Total original size:</span>
               <span className="font-medium">
                 {(images.reduce((sum, img) => sum + img.originalSize, 0) / (1024 * 1024)).toFixed(2)} MB
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm mt-1">
+            <div className="flex items-center justify-between text-xs sm:text-sm mb-1">
               <span className="text-gray-600">Estimated processed size:</span>
               <span className="font-medium text-primary-600">
                 {(images.reduce((sum, img) => sum + (img.estimatedSize || img.originalSize), 0) / (1024 * 1024)).toFixed(2)} MB
               </span>
             </div>
-            <div className="flex items-center justify-between text-sm mt-1">
+            <div className="flex items-center justify-between text-xs sm:text-sm">
               <span className="text-gray-600">Estimated compression:</span>
               <span className="font-medium text-green-600">
                 {Math.round((1 - images.reduce((sum, img) => sum + (img.estimatedSize || img.originalSize), 0) / images.reduce((sum, img) => sum + img.originalSize, 0)) * 100)}%
