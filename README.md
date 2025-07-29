@@ -24,6 +24,7 @@ A full-stack image file conversion platform built with Next.js, MongoDB, and Tai
 - **MongoDB Integration**: Persistent job tracking and file history
 - **Optimized Processing**: Uses Sharp for high-performance image processing
 - **Modular Architecture**: Clean, maintainable service-based structure
+- **Automatic Cleanup**: Processed files are automatically deleted when starting new sessions
 
 ## 🛠️ Tech Stack
 
@@ -194,6 +195,8 @@ Run the development server and test the following:
 - `GET /api/download-all` - Download ZIP of all files
 - `GET /api/preview/[filename]` - Preview processed file
 - `POST /api/estimate` - Estimate processing results
+- `GET /api/cleanup` - List current processed files
+- `DELETE /api/cleanup` - Clean up all processed files (with optional `?olderThan=hours` parameter)
 
 ## 🤝 Contributing
 

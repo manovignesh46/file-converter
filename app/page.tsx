@@ -16,6 +16,7 @@ export default function Home() {
   })
   const [currentJob, setCurrentJob] = useState<JobProgress | null>(null)
   const [results, setResults] = useState<string[]>([])
+  const [isCleaningUp, setIsCleaningUp] = useState(false)
 
   const handleImagesChange = useCallback((newImages: ImageFile[]) => {
     setImages(newImages)
@@ -78,7 +79,29 @@ export default function Home() {
     setCurrentJob(null)
   }
 
-  const clearResults = () => {
+  const clearResults = async () => {
+    setIsCleaningUp(true)
+    
+    try {
+      // Call cleanup API to delete processed files
+      const response = await fetch('/api/cleanup', {
+        method: 'DELETE',
+      })
+      
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Cleanup result:', result.message)
+      } else {
+        console.warn('Cleanup failed:', await response.text())
+      }
+    } catch (error) {
+      console.error('Failed to cleanup processed files:', error)
+      // Continue with UI cleanup even if file cleanup fails
+    } finally {
+      setIsCleaningUp(false)
+    }
+    
+    // Clear UI state
     setResults([])
     setImages([])
   }
@@ -102,6 +125,7 @@ export default function Home() {
           <ResultsView 
             files={results} 
             onStartNew={clearResults}
+            isCleaningUp={isCleaningUp}
           />
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

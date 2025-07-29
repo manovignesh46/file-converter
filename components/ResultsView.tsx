@@ -46,9 +46,10 @@ const Share2 = ({ className }: { className?: string }) => (
 interface ResultsViewProps {
   files: string[]
   onStartNew: () => void
+  isCleaningUp?: boolean
 }
 
-export default function ResultsView({ files, onStartNew }: ResultsViewProps) {
+export default function ResultsView({ files, onStartNew, isCleaningUp = false }: ResultsViewProps) {
   const handleDownload = (file: string) => {
     // Create download link
     const link = document.createElement('a')
@@ -207,10 +208,13 @@ export default function ResultsView({ files, onStartNew }: ResultsViewProps) {
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={onStartNew}
-          className="flex-1 btn-primary flex items-center justify-center"
+          disabled={isCleaningUp}
+          className={`flex-1 btn-primary flex items-center justify-center ${
+            isCleaningUp ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
-          <RotateCcw className="w-5 h-5 mr-2" />
-          Process More Images
+          <RotateCcw className={`w-5 h-5 mr-2 ${isCleaningUp ? 'animate-spin' : ''}`} />
+          {isCleaningUp ? 'Cleaning up...' : 'Process More Images'}
         </button>
         <button
           onClick={handleDownloadAll}
