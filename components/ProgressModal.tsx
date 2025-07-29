@@ -46,14 +46,29 @@ export default function ProgressModal({ job, onClose }: ProgressModalProps) {
     document.body.removeChild(link)
   }
 
-  const handleDownloadAll = () => {
+  const handleDownloadAll = async () => {
     if (job.outputFiles && job.outputFiles.length > 0) {
-      const link = document.createElement('a')
-      link.href = `/api/download-all?files=${job.outputFiles.join(',')}`
-      link.download = 'processed-images.zip'
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      try {
+        const response = await fetch('/api/download-all', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ files: job.outputFiles })
+        })
+        
+        if (response.ok) {
+          const blob = await response.blob()
+          const url = window.URL.createObjectURL(blob)
+          const link = document.createElement('a')
+          link.href = url
+          link.download = 'processed-images.zip'
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          window.URL.revokeObjectURL(url)
+        }
+      } catch (error) {
+        console.error('Download failed:', error)
+      }
     }
   }
   const getStatusIcon = () => {

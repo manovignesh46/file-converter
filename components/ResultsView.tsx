@@ -59,14 +59,28 @@ export default function ResultsView({ files, onStartNew }: ResultsViewProps) {
     document.body.removeChild(link)
   }
 
-  const handleDownloadAll = () => {
-    // Trigger download of ZIP file containing all processed images
-    const link = document.createElement('a')
-    link.href = `/api/download-all?files=${files.join(',')}`
-    link.download = 'processed-images.zip'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+  const handleDownloadAll = async () => {
+    try {
+      const response = await fetch('/api/download-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ files })
+      })
+      
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = 'processed-images.zip'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      }
+    } catch (error) {
+      console.error('Download failed:', error)
+    }
   }
 
   const formatFileName = (fileName: string) => {

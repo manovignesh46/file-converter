@@ -3,16 +3,14 @@ import archiver from 'archiver'
 import path from 'path'
 import fs from 'fs'
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const filesParam = searchParams.get('files')
+    const { files } = await request.json()
     
-    if (!filesParam) {
+    if (!files || !Array.isArray(files)) {
       return NextResponse.json({ error: 'No files specified' }, { status: 400 })
     }
 
-    const filenames = filesParam.split(',')
     const processedDir = path.join(process.cwd(), 'public', 'processed')
 
     // Create a readable stream
@@ -32,7 +30,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Add files to archive
-    for (const filename of filenames) {
+    for (const filename of files) {
       const filePath = path.join(processedDir, filename.trim())
       
       try {
