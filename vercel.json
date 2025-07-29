@@ -1,16 +1,5 @@
 {
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
   "framework": "nextjs",
-  "functions": {
-    "app/api/process/route.ts": {
-      "maxDuration": 60
-    },
-    "app/api/download-all/route.ts": {
-      "maxDuration": 30
-    }
-  },
   "env": {
     "SKIP_ENV_VALIDATION": "1"
   }
