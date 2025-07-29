@@ -37,10 +37,15 @@ interface ProgressModalProps {
 }
 
 export default function ProgressModal({ job, onClose }: ProgressModalProps) {
-  const handleDownloadFile = (file: string) => {
+  const getFileName = (file: string | { fileName: string }): string => {
+    return typeof file === 'string' ? file : file.fileName
+  }
+
+  const handleDownloadFile = (file: string | { fileName: string }) => {
+    const fileName = getFileName(file)
     const link = document.createElement('a')
-    link.href = `/api/download/${file}`
-    link.download = file
+    link.href = `/api/download/${fileName}`
+    link.download = fileName
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -49,10 +54,11 @@ export default function ProgressModal({ job, onClose }: ProgressModalProps) {
   const handleDownloadAll = async () => {
     if (job.outputFiles && job.outputFiles.length > 0) {
       try {
+        const fileNames = job.outputFiles.map(getFileName)
         const response = await fetch('/api/download-all', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ files: job.outputFiles })
+          body: JSON.stringify({ files: fileNames })
         })
         
         if (response.ok) {
@@ -183,7 +189,7 @@ export default function ProgressModal({ job, onClose }: ProgressModalProps) {
                     key={index}
                     className="flex items-center justify-between p-2 bg-gray-50 rounded"
                   >
-                    <span className="text-sm text-gray-700 truncate">{file}</span>
+                    <span className="text-sm text-gray-700 truncate">{getFileName(file)}</span>
                     <button 
                       onClick={() => handleDownloadFile(file)}
                       className="text-primary-500 hover:text-primary-600 text-sm font-medium"

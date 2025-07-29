@@ -110,6 +110,7 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
 
   const calculateEstimatedSize = useCallback((file: File, options: ConversionOptions): number => {
     const originalSize = file.size
+    const isPdf = file.type === 'application/pdf'
 
     switch (options.operation) {
       case 'compress':
@@ -124,7 +125,23 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
         }
         return originalSize * 0.8
 
+      case 'pdf-compress':
+        if (options.targetSize && options.targetSizeUnit) {
+          const targetBytes = options.targetSizeUnit === 'KB' 
+            ? options.targetSize * 1024 
+            : options.targetSize * 1024 * 1024
+          return Math.min(targetBytes, originalSize)
+        }
+        if (options.compressionQuality) {
+          // PDF compression is less aggressive than image compression
+          const ratio = Math.max(options.compressionQuality / 100, 0.5)
+          return Math.round(originalSize * ratio)
+        }
+        return Math.round(originalSize * 0.75) // Default 25% reduction
+
       case 'resize':
+        // Only applies to images
+        if (isPdf) return originalSize
         // Estimate based on dimension reduction
         if (options.resizeWidth || options.resizeHeight) {
           return Math.round(originalSize * 0.6) // Rough estimate
@@ -132,6 +149,8 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
         return originalSize
 
       case 'convert':
+        // Only applies to images
+        if (isPdf) return originalSize
         // Different formats have different compression ratios
         if (options.outputFormat === 'webp') {
           return Math.round(originalSize * 0.7)
@@ -165,14 +184,18 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
   }, [images, options, calculateEstimatedSize, onImagesChange])
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const newImages: ImageFile[] = acceptedFiles.map((file, index) => ({
-      id: `${Date.now()}-${index}`,
-      file,
-      preview: URL.createObjectURL(file),
-      originalSize: file.size,
-      estimatedSize: calculateEstimatedSize(file, options),
-      order: images.length + index,
-    }))
+    const newImages: ImageFile[] = acceptedFiles.map((file, index) => {
+      const isPdf = file.type === 'application/pdf'
+      return {
+        id: `${Date.now()}-${index}`,
+        file,
+        preview: isPdf ? '' : URL.createObjectURL(file), // No preview for PDFs
+        originalSize: file.size,
+        estimatedSize: calculateEstimatedSize(file, options),
+        order: images.length + index,
+        isPdf,
+      }
+    })
 
     onImagesChange([...images, ...newImages])
   }, [images, onImagesChange, options, calculateEstimatedSize])
@@ -180,7 +203,8 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png', '.webp', '.gif', '.bmp']
+      'image/*': ['.jpeg', '.jpg', '.png', '.webp', '.gif', '.bmp'],
+      'application/pdf': ['.pdf']
     },
     multiple: true
   })
@@ -212,9 +236,14 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
   return (
     <div className="card">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Upload Images</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          {options.operation === 'pdf-compress' ? 'Upload PDFs' : 'Upload Images'}
+        </h2>
         <p className="text-gray-600">
-          Drag and drop your images here, or click to select files. You can reorder them by dragging.
+          {options.operation === 'pdf-compress' 
+            ? 'Drag and drop your PDF files here, or click to select files.'
+            : 'Drag and drop your images here, or click to select files. You can reorder them by dragging.'
+          }
         </p>
       </div>
 
@@ -232,16 +261,22 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
             )}
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            {isDragActive ? 'Drop images here' : 'Upload your images'}
+            {isDragActive 
+              ? (options.operation === 'pdf-compress' ? 'Drop PDFs here' : 'Drop images here')
+              : (options.operation === 'pdf-compress' ? 'Upload your PDFs' : 'Upload your images')
+            }
           </h3>
           <p className="text-gray-500 text-center">
             {isDragActive 
               ? 'Release to upload your files'
-              : 'Drag & drop images here, or click to select'
+              : (options.operation === 'pdf-compress' 
+                  ? 'Drag & drop PDF files here, or click to select'
+                  : 'Drag & drop images here, or click to select'
+                )
             }
           </p>
           <p className="text-sm text-gray-400 mt-2">
-            Supports: JPG, PNG, WebP, GIF, BMP (Max 50MB per file)
+            Supports: JPG, PNG, WebP, GIF, BMP, PDF (Max 50MB per file)
           </p>
         </div>
       </div>
@@ -250,7 +285,10 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">
-              Uploaded Images ({images.length})
+              {options.operation === 'pdf-compress' 
+                ? `Uploaded PDFs (${images.length})`
+                : `Uploaded Images (${images.length})`
+              }
             </h3>
             <button
               onClick={() => onImagesChange([])}

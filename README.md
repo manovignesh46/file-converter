@@ -1,6 +1,6 @@
-# File Converter - Professional Image Processing Platform
+# File Converter - Professional Image & Document Processing Platform
 
-A full-stack image file conversion platform built with Next.js, MongoDB, and Tailwind CSS. This application provides comprehensive image processing capabilities including compression, resizing, format conversion, PDF generation, and watermarking.
+A full-stack file conversion platform built with Next.js, MongoDB, and Tailwind CSS. This application provides comprehensive image processing capabilities including compression, resizing, format conversion, PDF generation, watermarking, and PDF compression.
 
 ## 🚀 Features
 
@@ -9,6 +9,7 @@ A full-stack image file conversion platform built with Next.js, MongoDB, and Tai
 - **Image Resizing**: Change dimensions with aspect ratio preservation and crop options
 - **Format Conversion**: Convert between JPG, PNG, and WebP formats
 - **PDF Generation**: Combine multiple images into a single PDF document
+- **PDF Compression**: Compress existing PDF files to reduce size
 - **Watermarking**: Add text watermarks with customizable positioning
 
 ### Advanced User Experience
@@ -144,6 +145,13 @@ file-converter/
 4. Choose position and styling
 5. Apply watermark and download
 
+### PDF Compression
+1. Upload PDF files
+2. Select "PDF Compress" operation
+3. Adjust quality slider or set target file size
+4. Choose optimization options
+5. Process and download compressed PDFs
+
 ## 🔧 Configuration
 
 ### Image Processing Options
@@ -158,6 +166,12 @@ file-converter/
 - **Orientation**: Portrait or Landscape
 - **Margins**: Customizable page margins
 - **Image Quality**: Compression for PDF images
+
+### PDF Compression Options
+- **Quality Control**: 10-100% quality settings for compression
+- **Target File Size**: Compress to specific KB/MB targets
+- **Metadata Removal**: Strip document metadata for privacy
+- **Image Optimization**: Optimize embedded images for better compression
 
 ## 🚀 Deployment
 

@@ -1,7 +1,9 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
 
-const inter = Inter({ subsets: ['latin'] })
+// Use system fonts as a more reliable alternative
+const systemFont = {
+  className: 'font-system'
+}
 
 export const metadata = {
   title: 'File Converter - Professional Image Processing Platform',
@@ -15,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={systemFont.className}>
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
           {children}
         </div>

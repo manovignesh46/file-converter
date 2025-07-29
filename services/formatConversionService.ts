@@ -126,30 +126,39 @@ export class FormatConversionService {
     const opacity = watermarkOptions.opacity || 0.5
     const color = watermarkOptions.color || '#ffffff'
 
-    // Calculate position
-    let x = 10
-    let y = fontSize + 10
+    // Calculate text width more accurately (approximate)
+    const textWidth = watermarkOptions.text.length * fontSize * 0.6
+    const padding = 20
 
-    switch (watermarkOptions.position) {
+    // Calculate position with bounds checking
+    let x = padding
+    let y = fontSize + padding
+
+    switch (watermarkOptions.position || 'bottom-right') {
       case 'top-left':
-        x = 10
-        y = fontSize + 10
+        x = padding
+        y = fontSize + padding
         break
       case 'top-right':
-        x = width - (watermarkOptions.text.length * fontSize * 0.6) - 10
-        y = fontSize + 10
+        x = Math.max(width - textWidth - padding, padding)
+        y = fontSize + padding
         break
       case 'bottom-left':
-        x = 10
-        y = height - 10
+        x = padding
+        y = Math.max(height - padding, fontSize + padding)
         break
       case 'bottom-right':
-        x = width - (watermarkOptions.text.length * fontSize * 0.6) - 10
-        y = height - 10
+        x = Math.max(width - textWidth - padding, padding)
+        y = Math.max(height - padding, fontSize + padding)
         break
       case 'center':
-        x = (width - (watermarkOptions.text.length * fontSize * 0.6)) / 2
-        y = height / 2
+        x = Math.max((width - textWidth) / 2, padding)
+        y = Math.max(height / 2, fontSize + padding)
+        break
+      default:
+        // Default to bottom-right if no valid position specified
+        x = Math.max(width - textWidth - padding, padding)
+        y = Math.max(height - padding, fontSize + padding)
         break
     }
 

@@ -5,6 +5,7 @@ import { ImageCompressionService } from '../../../services/imageCompressionServi
 import { ImageResizeService } from '../../../services/imageResizeService'
 import { ImageToPdfService } from '../../../services/imageToPdfService'
 import { FormatConversionService } from '../../../services/formatConversionService'
+import { PdfCompressionService } from '../../../services/pdfCompressionService'
 import connectDB from '../../../lib/mongodb'
 import { Job } from '../../../lib/models'
 import { v4 as uuidv4 } from 'uuid'
@@ -77,7 +78,7 @@ export async function POST(request: NextRequest) {
 }
 
 async function processFiles(files: File[], options: any, jobId: string) {
-  const outputFiles: string[] = []
+  const outputFiles: any[] = []
 
   switch (options.operation) {
     case 'compress':
@@ -92,7 +93,12 @@ async function processFiles(files: File[], options: any, jobId: string) {
           removeMetadata: options.removeMetadata,
           outputFormat: options.outputFormat,
         })
-        outputFiles.push(result.processedName)
+        outputFiles.push({
+          fileName: result.processedName,
+          originalSize: result.originalSize,
+          processedSize: result.processedSize,
+          compressionRatio: result.compressionRatio,
+        })
       }
       break
 
@@ -109,21 +115,59 @@ async function processFiles(files: File[], options: any, jobId: string) {
           outputFormat: options.outputFormat,
           removeMetadata: options.removeMetadata,
         })
-        outputFiles.push(result.processedName)
+        outputFiles.push({
+          fileName: result.processedName,
+          originalSize: result.originalSize,
+          processedSize: result.processedSize,
+          dimensions: result.dimensions,
+        })
       }
       break
 
     case 'convert':
-      const conversionService = new FormatConversionService()
-      
-      for (const file of files) {
-        const buffer = Buffer.from(await file.arrayBuffer())
-        const result = await conversionService.convertFormat(buffer, file.name, {
-          outputFormat: options.outputFormat,
-          quality: options.compressionQuality,
-          removeMetadata: options.removeMetadata,
+      if (options.outputFormat === 'pdf') {
+        // Convert images to PDF
+        const pdfService = new ImageToPdfService()
+        
+        const imageBuffers = await Promise.all(
+          files.map(async (file, index) => ({
+            buffer: Buffer.from(await file.arrayBuffer()),
+            name: file.name,
+            order: index,
+          }))
+        )
+
+        const pdfResult = await pdfService.convertImagesToPdf(imageBuffers, {
+          pageSize: options.pdfPageSize || 'A4',
+          orientation: 'portrait',
+          quality: options.compressionQuality || 90,
         })
-        outputFiles.push(result.processedName)
+        
+        outputFiles.push({
+          fileName: pdfResult.pdfName,
+          originalSize: imageBuffers.reduce((sum, img) => sum + img.buffer.length, 0),
+          processedSize: pdfResult.fileSize,
+          format: 'PDF',
+          pageCount: pdfResult.pageCount,
+        })
+      } else {
+        // Regular format conversion
+        const conversionService = new FormatConversionService()
+        
+        for (const file of files) {
+          const buffer = Buffer.from(await file.arrayBuffer())
+          const result = await conversionService.convertFormat(buffer, file.name, {
+            outputFormat: options.outputFormat,
+            quality: options.compressionQuality,
+            removeMetadata: options.removeMetadata,
+          })
+          outputFiles.push({
+            fileName: result.processedName,
+            originalSize: result.originalSize,
+            processedSize: result.processedSize,
+            format: result.format,
+          })
+        }
       }
       break
 
@@ -143,7 +187,12 @@ async function processFiles(files: File[], options: any, jobId: string) {
         orientation: options.orientation || 'portrait',
         quality: options.compressionQuality || 90,
       })
-      outputFiles.push(pdfResult.pdfName)
+      outputFiles.push({
+        fileName: pdfResult.pdfName,
+        originalSize: imageBuffers.reduce((total, img) => total + img.buffer.length, 0),
+        processedSize: pdfResult.fileSize,
+        pageCount: pdfResult.pageCount,
+      })
       break
 
     case 'watermark':
@@ -155,8 +204,9 @@ async function processFiles(files: File[], options: any, jobId: string) {
           buffer,
           file.name,
           {
-            text: options.watermarkText,
+            text: options.watermarkText || 'Sample Watermark',
             position: options.watermarkPosition,
+            color: options.watermarkColor,
           },
           {
             outputFormat: options.outputFormat || 'jpg',
@@ -164,7 +214,34 @@ async function processFiles(files: File[], options: any, jobId: string) {
             removeMetadata: options.removeMetadata,
           }
         )
-        outputFiles.push(result.processedName)
+        outputFiles.push({
+          fileName: result.processedName,
+          originalSize: result.originalSize,
+          processedSize: result.processedSize,
+          format: result.format,
+        })
+      }
+      break
+
+    case 'pdf-compress':
+      const pdfCompressionService = new PdfCompressionService()
+      
+      for (const file of files) {
+        const buffer = Buffer.from(await file.arrayBuffer())
+        const result = await pdfCompressionService.compressPdf(buffer, file.name, {
+          quality: options.compressionQuality,
+          targetSize: options.targetSize,
+          targetSizeUnit: options.targetSizeUnit,
+          removeMetadata: options.removeMetadata,
+          optimizeImages: options.optimizeImages,
+        })
+        outputFiles.push({
+          fileName: result.processedName,
+          originalSize: result.originalSize,
+          processedSize: result.processedSize,
+          compressionRatio: result.compressionRatio,
+          pageCount: result.pageCount,
+        })
       }
       break
 

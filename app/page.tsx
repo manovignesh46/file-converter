@@ -15,7 +15,15 @@ export default function Home() {
     compressionQuality: 80,
   })
   const [currentJob, setCurrentJob] = useState<JobProgress | null>(null)
-  const [results, setResults] = useState<string[]>([])
+  const [results, setResults] = useState<Array<string | {
+    fileName: string
+    originalSize?: number
+    processedSize?: number
+    compressionRatio?: number
+    dimensions?: { width: number; height: number }
+    format?: string
+    pageCount?: number
+  }>>([])
   const [isCleaningUp, setIsCleaningUp] = useState(false)
 
   const handleImagesChange = useCallback((newImages: ImageFile[]) => {
@@ -143,6 +151,7 @@ export default function Home() {
                 onOptionsChange={handleOptionsChange}
                 onProcess={handleProcess}
                 canProcess={images.length > 0}
+                images={images}
               />
             </div>
           </div>

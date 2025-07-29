@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from 'react'
+
 // Simple icon components
 const Download = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -44,17 +46,91 @@ const Share2 = ({ className }: { className?: string }) => (
 )
 
 interface ResultsViewProps {
-  files: string[]
+  files: Array<string | {
+    fileName: string
+    originalSize?: number
+    processedSize?: number
+    compressionRatio?: number
+    dimensions?: { width: number; height: number }
+    format?: string
+    pageCount?: number
+  }>
   onStartNew: () => void
   isCleaningUp?: boolean
 }
 
 export default function ResultsView({ files, onStartNew, isCleaningUp = false }: ResultsViewProps) {
-  const handleDownload = (file: string) => {
+  type FileType = typeof files[0]
+  
+  // State to track image loading errors for each file
+  const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
+  
+  const handleImageError = (fileName: string) => {
+    setImageErrors(prev => ({ ...prev, [fileName]: true }))
+  }
+  
+  const handleImageLoad = (fileName: string) => {
+    setImageErrors(prev => ({ ...prev, [fileName]: false }))
+  }
+
+  const getFileName = (file: FileType): string => {
+    return typeof file === 'string' ? file : file.fileName
+  }
+
+  const getFileSize = (file: FileType): string => {
+    if (typeof file === 'string') {
+      return 'Calculating...'
+    }
+    if (file.processedSize) {
+      return formatFileSize(file.processedSize)
+    }
+    return 'Calculating...'
+  }
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
+
+  const calculateSummaryStats = () => {
+    let totalOriginalSize = 0
+    let totalProcessedSize = 0
+    let filesWithSizeData = 0
+    let totalSpaceSaved = 0
+
+    files.forEach(file => {
+      if (typeof file === 'object' && file.originalSize && file.processedSize) {
+        totalOriginalSize += file.originalSize
+        totalProcessedSize += file.processedSize
+        totalSpaceSaved += (file.originalSize - file.processedSize)
+        filesWithSizeData++
+      }
+    })
+
+    const averageReduction = filesWithSizeData > 0 
+      ? ((totalOriginalSize - totalProcessedSize) / totalOriginalSize * 100)
+      : 0
+
+    return {
+      filesProcessed: files.length,
+      averageReduction: averageReduction > 0 ? averageReduction.toFixed(1) + '%' : 'N/A',
+      totalSize: totalProcessedSize > 0 ? formatFileSize(totalProcessedSize) : 'N/A',
+      spaceSaved: totalSpaceSaved > 0 ? formatFileSize(totalSpaceSaved) : 'N/A',
+      hasCompressionData: filesWithSizeData > 0
+    }
+  }
+
+  const summaryStats = calculateSummaryStats()
+
+  const handleDownload = (file: FileType) => {
+    const fileName = getFileName(file)
     // Create download link
     const link = document.createElement('a')
-    link.href = `/api/download/${file}`
-    link.download = file
+    link.href = `/api/download/${fileName}`
+    link.download = fileName
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -62,10 +138,11 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
 
   const handleDownloadAll = async () => {
     try {
+      const fileNames = files.map(getFileName)
       const response = await fetch('/api/download-all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ files })
+        body: JSON.stringify({ files: fileNames })
       })
       
       if (response.ok) {
@@ -84,21 +161,19 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
     }
   }
 
-  const formatFileName = (fileName: string) => {
+  const formatFileName = (file: FileType): string => {
+    const fileName = getFileName(file)
     // The filename now contains meaningful information, so we can display it as-is
     // Just remove the unique ID suffix for cleaner display
     return fileName.replace(/_[a-f0-9]{8}\./i, '.')
   }
 
-  const getFileExtension = (fileName: string) => {
+  const getFileExtension = (file: FileType): string => {
+    const fileName = getFileName(file)
     return fileName.split('.').pop()?.toUpperCase() || 'UNKNOWN'
   }
 
-  const getFileSize = (fileName: string) => {
-    // This would typically come from the API response
-    // For now, return a placeholder
-    return 'Calculating...'
-  }
+
 
   return (
     <div className="card">
@@ -132,52 +207,58 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {files.map((file, index) => (
-            <div
-              key={index}
-              className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
-            >
-              {/* File Preview */}
-              <div className="aspect-video bg-gray-100 relative overflow-hidden">
-                <img
-                  src={`/api/preview/${file}`}
-                  alt={formatFileName(file)}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Fallback to file icon if preview fails
-                    e.currentTarget.style.display = 'none'
-                  }}
-                />
-                <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                  <FileImage className="w-8 h-8 text-gray-400" />
+          {files.map((file, index) => {
+            const fileName = getFileName(file)
+            const hasError = imageErrors[fileName] || false
+            
+            return (
+              <div
+                key={fileName}
+                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+              >
+                {/* File Preview */}
+                <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                  {!hasError ? (
+                    <img
+                      src={`/api/preview/${encodeURIComponent(fileName)}`}
+                      alt={formatFileName(file)}
+                      className="w-full h-full object-cover"
+                      onError={() => handleImageError(fileName)}
+                      onLoad={() => handleImageLoad(fileName)}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
+                      <FileImage className="w-8 h-8 text-gray-400" />
+                    </div>
+                  )}
+                </div>
+
+                {/* File Info */}
+                <div className="p-4">
+                  <h4 className="font-medium text-gray-900 mb-1 truncate">
+                    {formatFileName(file)}
+                  </h4>
+                  <p className="text-sm text-gray-500 mb-3">
+                    Format: {getFileExtension(file)} • Size: {getFileSize(file)}
+                  </p>
+
+                  {/* Actions */}
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleDownload(file)}
+                      className="flex-1 btn-primary text-sm py-2"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      Download
+                    </button>
+                    <button className="btn-secondary text-sm py-2 px-3">
+                      <Share2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              {/* File Info */}
-              <div className="p-4">
-                <h4 className="font-medium text-gray-900 mb-1 truncate">
-                  {formatFileName(file)}
-                </h4>
-                <p className="text-sm text-gray-500 mb-3">
-                  Format: {getFileExtension(file)} • Size: {getFileSize(file)}
-                </p>
-
-                {/* Actions */}
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleDownload(file)}
-                    className="flex-1 btn-primary text-sm py-2"
-                  >
-                    <Download className="w-4 h-4 mr-1" />
-                    Download
-                  </button>
-                  <button className="btn-secondary text-sm py-2 px-3">
-                    <Share2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
@@ -186,22 +267,33 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
         <h3 className="font-medium text-gray-900 mb-3">Processing Summary</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-primary-600">{files.length}</div>
+            <div className="text-2xl font-bold text-primary-600">{summaryStats.filesProcessed}</div>
             <div className="text-sm text-gray-500">Files Processed</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-green-600">~45%</div>
+            <div className={`text-2xl font-bold ${summaryStats.hasCompressionData ? 'text-green-600' : 'text-gray-400'}`}>
+              {summaryStats.averageReduction}
+            </div>
             <div className="text-sm text-gray-500">Size Reduction</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-600">~2.3MB</div>
+            <div className={`text-2xl font-bold ${summaryStats.hasCompressionData ? 'text-blue-600' : 'text-gray-400'}`}>
+              {summaryStats.totalSize}
+            </div>
             <div className="text-sm text-gray-500">Total Size</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-purple-600">15s</div>
-            <div className="text-sm text-gray-500">Processing Time</div>
+            <div className={`text-2xl font-bold ${summaryStats.hasCompressionData ? 'text-purple-600' : 'text-gray-400'}`}>
+              {summaryStats.spaceSaved}
+            </div>
+            <div className="text-sm text-gray-500">Space Saved</div>
           </div>
         </div>
+        {!summaryStats.hasCompressionData && (
+          <div className="mt-3 text-sm text-gray-500 text-center">
+            Detailed metrics available for files with compression data
+          </div>
+        )}
       </div>
 
       {/* Action Buttons */}

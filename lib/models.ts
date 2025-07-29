@@ -33,7 +33,9 @@ const JobSchema = new mongoose.Schema({
     size: Number,
     mimeType: String,
   }],
-  outputFiles: [String],
+  outputFiles: [{
+    type: mongoose.Schema.Types.Mixed, // Allow both string and object formats for backward compatibility
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

@@ -5,10 +5,11 @@ export interface ImageFile {
   order: number
   estimatedSize?: number
   originalSize: number
+  isPdf?: boolean // New field to identify PDF files
 }
 
 export interface ConversionOptions {
-  operation: 'compress' | 'resize' | 'convert' | 'pdf' | 'watermark'
+  operation: 'compress' | 'resize' | 'convert' | 'pdf' | 'watermark' | 'pdf-compress'
   compressionQuality?: number
   targetSize?: number
   targetSizeUnit?: 'KB' | 'MB'
@@ -16,10 +17,14 @@ export interface ConversionOptions {
   resizeHeight?: number
   maintainAspectRatio?: boolean
   cropToFit?: boolean
-  outputFormat?: 'jpg' | 'png' | 'webp'
+  outputFormat?: 'jpg' | 'png' | 'webp' | 'pdf'
   removeMetadata?: boolean
   watermarkText?: string
   watermarkPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center'
+  watermarkColor?: string // New field for watermark color
+  optimizeImages?: boolean // New field for PDF compression
+  pdfLayout?: 'fit' | 'original' | 'fill' // New field for PDF layout
+  pdfPageSize?: 'A4' | 'Letter' | 'Legal' | 'A3' // New field for PDF page size
 }
 
 export interface JobProgress {
@@ -27,5 +32,11 @@ export interface JobProgress {
   status: 'pending' | 'processing' | 'completed' | 'error'
   progress: number
   message: string
-  outputFiles?: string[]
+  outputFiles?: Array<string | {
+    fileName: string
+    originalSize?: number
+    processedSize?: number
+    compressionRatio?: number
+    pageCount?: number
+  }>
 }

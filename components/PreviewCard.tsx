@@ -19,6 +19,16 @@ const FileImage = ({ className }: { className?: string }) => (
   </svg>
 )
 
+const FileText = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <polyline points="14,2 14,8 20,8"></polyline>
+    <line x1="16" y1="13" x2="8" y2="13"></line>
+    <line x1="16" y1="17" x2="8" y2="17"></line>
+    <polyline points="10,9 9,9 8,9"></polyline>
+  </svg>
+)
+
 interface PreviewCardProps {
   image: ImageFile
   onRemove: (id: string) => void
@@ -49,14 +59,23 @@ export default function PreviewCard({ image, onRemove, options }: PreviewCardPro
 
   return (
     <div className="relative bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden group hover:shadow-md transition-all duration-200">
-      {/* Image Preview */}
+      {/* Image/PDF Preview */}
       <div className="aspect-square bg-gray-100 relative overflow-hidden">
-        <img
-          src={image.preview}
-          alt={image.file.name}
-          className="w-full h-full object-cover"
-          onLoad={() => URL.revokeObjectURL(image.preview)}
-        />
+        {image.isPdf ? (
+          <div className="w-full h-full flex items-center justify-center bg-red-50">
+            <div className="text-center">
+              <FileText className="w-12 h-12 text-red-600 mx-auto mb-2" />
+              <span className="text-xs text-red-600 font-medium">PDF</span>
+            </div>
+          </div>
+        ) : (
+          <img
+            src={image.preview}
+            alt={image.file.name}
+            className="w-full h-full object-cover"
+            onLoad={() => URL.revokeObjectURL(image.preview)}
+          />
+        )}
         
         {/* Remove Button */}
         <button
