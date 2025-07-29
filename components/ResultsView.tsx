@@ -209,7 +209,7 @@ export default function ResultsView({ files, onStartNew }: ResultsViewProps) {
 
       {/* Additional Options */}
       <div className="mt-6 pt-6 border-t border-gray-200">
-        <h3 className="font-medium text-gray-900 mb-3">What's Next?</h3>
+        <h3 className="font-medium text-gray-900 mb-3">What&apos;s Next?</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <FileImage className="w-8 h-8 text-blue-600 mx-auto mb-2" />

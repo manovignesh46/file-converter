@@ -162,7 +162,7 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
     if (JSON.stringify(updatedImages) !== JSON.stringify(images)) {
       onImagesChange(updatedImages)
     }
-  }, [images, options, calculateEstimatedSize])
+  }, [images, options, calculateEstimatedSize, onImagesChange])
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const newImages: ImageFile[] = acceptedFiles.map((file, index) => ({

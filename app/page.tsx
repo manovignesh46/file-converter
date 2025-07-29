@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import DragDropUploader from '../components/DragDropUploader'
 import OptionsPanel from '../components/OptionsPanel'
 import ProgressModal from '../components/ProgressModal'
@@ -48,13 +48,13 @@ export default function Home() {
   const [currentJob, setCurrentJob] = useState<JobProgress | null>(null)
   const [results, setResults] = useState<string[]>([])
 
-  const handleImagesChange = (newImages: ImageFile[]) => {
+  const handleImagesChange = useCallback((newImages: ImageFile[]) => {
     setImages(newImages)
-  }
+  }, [])
 
-  const handleOptionsChange = (newOptions: ConversionOptions) => {
+  const handleOptionsChange = useCallback((newOptions: ConversionOptions) => {
     setOptions(newOptions)
-  }
+  }, [])
 
   const handleProcess = async () => {
     if (images.length === 0) return

@@ -61,7 +61,8 @@ export class ImageToPdfService {
     const contentWidth = pageWidth - (margin * 2)
     const contentHeight = pageHeight - (margin * 2)
 
-    for (const imageData of sortedImages) {
+    for (let i = 0; i < sortedImages.length; i++) {
+      const imageData = sortedImages[i]
       // Convert image to JPEG for PDF compatibility
       const processedBuffer = await sharp(imageData.buffer)
         .jpeg({ quality: options.quality || 90 })
@@ -96,7 +97,7 @@ export class ImageToPdfService {
       })
 
       // Optional: Add page number
-      page.drawText(`${page.node.Parent?.value || 1}`, {
+      page.drawText(`${i + 1}`, {
         x: pageWidth - margin - 20,
         y: margin - 20,
         size: 10,
