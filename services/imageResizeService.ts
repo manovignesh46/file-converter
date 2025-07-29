@@ -22,6 +22,7 @@ export interface ProcessedImage {
     width: number
     height: number
   }
+  buffer: Buffer
 }
 
 export class ImageResizeService {
@@ -107,6 +108,7 @@ export class ImageResizeService {
         width: processedMetadata.width || 0,
         height: processedMetadata.height || 0,
       },
+      buffer: processedBuffer,
     }
   }
 

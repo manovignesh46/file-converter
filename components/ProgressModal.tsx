@@ -52,7 +52,10 @@ export default function ProgressModal({ job, onClose }: ProgressModalProps) {
         const response = await fetch('/api/download-all', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ files: job.outputFiles })
+          body: JSON.stringify({ 
+            files: job.outputFiles,
+            jobId: job.id 
+          })
         })
         
         if (response.ok) {

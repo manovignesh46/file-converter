@@ -2,15 +2,33 @@ import { NextRequest, NextResponse } from 'next/server'
 import archiver from 'archiver'
 import path from 'path'
 import fs from 'fs'
+import { FileStorageService } from '../../../services/fileStorageService'
 
 export async function POST(request: NextRequest) {
   try {
-    const { files } = await request.json()
+    const { files, jobId } = await request.json()
     
     if (!files || !Array.isArray(files)) {
       return NextResponse.json({ error: 'No files specified' }, { status: 400 })
     }
 
+    // If jobId is provided, get files from MongoDB for that job
+    if (jobId) {
+      const zipBuffer = await FileStorageService.createJobZip(jobId)
+      if (zipBuffer) {
+        const headers = new Headers()
+        headers.set('Content-Type', 'application/zip')
+        headers.set('Content-Disposition', 'attachment; filename="processed-images.zip"')
+        headers.set('Content-Length', zipBuffer.length.toString())
+
+        return new NextResponse(zipBuffer, {
+          status: 200,
+          headers,
+        })
+      }
+    }
+
+    // Fallback: create ZIP from individual files (backward compatibility)
     const processedDir = path.join(process.cwd(), 'public', 'processed')
 
     // Create a readable stream

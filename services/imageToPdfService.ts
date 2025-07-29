@@ -17,6 +17,7 @@ export interface ProcessedPdf {
   outputPath: string
   pageCount: number
   fileSize: number
+  pdfBuffer: Buffer
 }
 
 export class ImageToPdfService {
@@ -124,6 +125,7 @@ export class ImageToPdfService {
       outputPath,
       pageCount: sortedImages.length,
       fileSize: pdfBytes.length,
+      pdfBuffer: Buffer.from(pdfBytes),
     }
   }
 

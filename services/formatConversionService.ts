@@ -24,6 +24,7 @@ export interface ProcessedImage {
   processedSize: number
   outputPath: string
   format: string
+  buffer: Buffer
 }
 
 export class FormatConversionService {
@@ -93,6 +94,7 @@ export class FormatConversionService {
       processedSize: processedBuffer.length,
       outputPath,
       format: options.outputFormat,
+      buffer: processedBuffer,
     }
   }
 
@@ -198,6 +200,7 @@ export class FormatConversionService {
       processedSize: processedBuffer.length,
       outputPath,
       format: extension,
+      buffer: processedBuffer,
     }
   }
 

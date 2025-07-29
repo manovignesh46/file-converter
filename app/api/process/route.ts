@@ -5,6 +5,7 @@ import { ImageCompressionService } from '../../../services/imageCompressionServi
 import { ImageResizeService } from '../../../services/imageResizeService'
 import { ImageToPdfService } from '../../../services/imageToPdfService'
 import { FormatConversionService } from '../../../services/formatConversionService'
+import { FileStorageService } from '../../../services/fileStorageService'
 import connectDB from '../../../lib/mongodb'
 import { Job } from '../../../lib/models'
 import { v4 as uuidv4 } from 'uuid'
@@ -78,6 +79,7 @@ export async function POST(request: NextRequest) {
 
 async function processFiles(files: File[], options: any, jobId: string) {
   const outputFiles: string[] = []
+  const storedFileIds: string[] = []
 
   switch (options.operation) {
     case 'compress':
@@ -92,7 +94,24 @@ async function processFiles(files: File[], options: any, jobId: string) {
           removeMetadata: options.removeMetadata,
           outputFormat: options.outputFormat,
         })
+        
+        // Store in MongoDB instead of file system
+        const fileId = await FileStorageService.storeFile(
+          result.buffer,
+          result.processedName,
+          file.name,
+          `image/${options.outputFormat || 'jpeg'}`,
+          'compress',
+          jobId,
+          {
+            originalSize: file.size,
+            compressionRatio: file.size / result.buffer.length,
+            format: options.outputFormat,
+          }
+        )
+        
         outputFiles.push(result.processedName)
+        storedFileIds.push(fileId)
       }
       break
 
@@ -109,7 +128,27 @@ async function processFiles(files: File[], options: any, jobId: string) {
           outputFormat: options.outputFormat,
           removeMetadata: options.removeMetadata,
         })
+        
+        // Store in MongoDB
+        const fileId = await FileStorageService.storeFile(
+          result.buffer,
+          result.processedName,
+          file.name,
+          `image/${options.outputFormat || 'jpeg'}`,
+          'resize',
+          jobId,
+          {
+            originalSize: file.size,
+            dimensions: {
+              width: options.resizeWidth,
+              height: options.resizeHeight,
+            },
+            format: options.outputFormat,
+          }
+        )
+        
         outputFiles.push(result.processedName)
+        storedFileIds.push(fileId)
       }
       break
 
@@ -123,7 +162,23 @@ async function processFiles(files: File[], options: any, jobId: string) {
           quality: options.compressionQuality,
           removeMetadata: options.removeMetadata,
         })
+        
+        // Store in MongoDB
+        const fileId = await FileStorageService.storeFile(
+          result.buffer,
+          result.processedName,
+          file.name,
+          `image/${options.outputFormat}`,
+          'convert',
+          jobId,
+          {
+            originalSize: file.size,
+            format: options.outputFormat,
+          }
+        )
+        
         outputFiles.push(result.processedName)
+        storedFileIds.push(fileId)
       }
       break
 
@@ -143,7 +198,25 @@ async function processFiles(files: File[], options: any, jobId: string) {
         orientation: options.orientation || 'portrait',
         quality: options.compressionQuality || 90,
       })
+      
+      // Store PDF in MongoDB
+      const fileId = await FileStorageService.storeFile(
+        pdfResult.pdfBuffer,
+        pdfResult.pdfName,
+        `${files.length}-images.pdf`,
+        'application/pdf',
+        'pdf',
+        jobId,
+        {
+          originalSize: files.reduce((sum, file) => sum + file.size, 0),
+          pageCount: files.length,
+          pageSize: options.pageSize,
+          orientation: options.orientation,
+        }
+      )
+      
       outputFiles.push(pdfResult.pdfName)
+      storedFileIds.push(fileId)
       break
 
     case 'watermark':
@@ -164,7 +237,25 @@ async function processFiles(files: File[], options: any, jobId: string) {
             removeMetadata: options.removeMetadata,
           }
         )
+        
+        // Store in MongoDB
+        const fileId = await FileStorageService.storeFile(
+          result.buffer,
+          result.processedName,
+          file.name,
+          `image/${options.outputFormat || 'jpeg'}`,
+          'watermark',
+          jobId,
+          {
+            originalSize: file.size,
+            watermarkText: options.watermarkText,
+            watermarkPosition: options.watermarkPosition,
+            format: options.outputFormat,
+          }
+        )
+        
         outputFiles.push(result.processedName)
+        storedFileIds.push(fileId)
       }
       break
 
@@ -172,5 +263,5 @@ async function processFiles(files: File[], options: any, jobId: string) {
       throw new Error(`Unsupported operation: ${options.operation}`)
   }
 
-  return { files: outputFiles }
+  return { files: outputFiles, storedFileIds }
 }

@@ -18,6 +18,7 @@ export interface ProcessedImage {
   processedSize: number
   compressionRatio: number
   outputPath: string
+  buffer: Buffer
 }
 
 export class ImageCompressionService {
@@ -101,6 +102,7 @@ export class ImageCompressionService {
       processedSize: processedBuffer.length,
       compressionRatio: (1 - processedBuffer.length / inputBuffer.length) * 100,
       outputPath,
+      buffer: processedBuffer,
     }
   }
 
@@ -171,6 +173,7 @@ export class ImageCompressionService {
       processedSize: bestBuffer.length,
       compressionRatio: (1 - bestBuffer.length / originalSize) * 100,
       outputPath,
+      buffer: bestBuffer,
     }
   }
 
