@@ -89,13 +89,11 @@ export default function Home() {
 
   const clearResults = async () => {
     setIsCleaningUp(true)
-    
     try {
       // Call cleanup API to delete processed files
       const response = await fetch('/api/cleanup', {
         method: 'DELETE',
       })
-      
       if (response.ok) {
         const result = await response.json()
         console.log('Cleanup result:', result.message)
@@ -108,10 +106,13 @@ export default function Home() {
     } finally {
       setIsCleaningUp(false)
     }
-    
     // Clear UI state
     setResults([])
     setImages([])
+    setOptions({
+      operation: 'compress',
+      compressionQuality: 80,
+    })
   }
 
   return (
