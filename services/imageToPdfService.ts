@@ -1,4 +1,4 @@
-import { PDFDocument, rgb } from 'pdf-lib'
+import { PDFDocument, rgb } from 'pdf-lib-with-encrypt' 
 import sharp from 'sharp'
 import { v4 as uuidv4 } from 'uuid'
 import path from 'path'

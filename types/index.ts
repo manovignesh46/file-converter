@@ -9,7 +9,7 @@ export interface ImageFile {
 }
 
 export interface ConversionOptions {
-  operation: 'compress' | 'resize' | 'convert' | 'pdf' | 'watermark' | 'pdf-compress'
+  operation: 'compress' | 'resize' | 'convert' | 'pdf' | 'watermark' | 'pdf-compress' | 'pdf-remove-password'
   compressionQuality?: number
   targetSize?: number
   targetSizeUnit?: 'KB' | 'MB'
@@ -25,6 +25,7 @@ export interface ConversionOptions {
   optimizeImages?: boolean // New field for PDF compression
   pdfLayout?: 'fit' | 'original' | 'fill' // New field for PDF layout
   pdfPageSize?: 'A4' | 'Letter' | 'Legal' | 'A3' // New field for PDF page size
+  pdfPassword?: string
 }
 
 export interface JobProgress {

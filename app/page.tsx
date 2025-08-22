@@ -59,7 +59,8 @@ export default function Home() {
       })
 
       if (!response.ok) {
-        throw new Error('Processing failed')
+        const errorData = await response.json()
+        throw new Error(errorData.details || 'Processing failed')
       }
 
       const result = await response.json()
@@ -78,7 +79,7 @@ export default function Home() {
         id: jobId,
         status: 'error',
         progress: 0,
-        message: 'Processing failed. Please try again.',
+        message: error instanceof Error ? error.message : 'Processing failed. Please try again.',
       })
     }
   }

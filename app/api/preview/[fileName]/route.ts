@@ -4,11 +4,11 @@ import fs from 'fs/promises'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { filename: string } }
+  { params }: { params: { fileName: string } }
 ) {
   try {
-    const filename = params.filename
-    const filePath = path.join(process.cwd(), 'public', 'processed', filename)
+    const fileName = params.fileName
+    const filePath = path.join(process.cwd(), 'public', 'processed', fileName)
 
     // Check if file exists
     try {
@@ -19,24 +19,21 @@ export async function GET(
 
     // Read file
     const fileBuffer = await fs.readFile(filePath)
-    const stats = await fs.stat(filePath)
 
     // Determine content type
-    const ext = path.extname(filename).toLowerCase()
+    const ext = path.extname(fileName).toLowerCase()
     const contentType = getContentType(ext)
 
-    // Set headers for download
+    // Set headers for preview (not download)
     const headers = new Headers()
     headers.set('Content-Type', contentType)
-    headers.set('Content-Length', stats.size.toString())
-    headers.set('Content-Disposition', `attachment; filename="${filename}"`)
     headers.set('Cache-Control', 'public, max-age=3600')
 
     return new NextResponse(fileBuffer, { headers })
 
   } catch (error) {
-    console.error('Download error:', error)
-    return NextResponse.json({ error: 'Download failed' }, { status: 500 })
+    console.error('Preview error:', error)
+    return NextResponse.json({ error: 'Preview failed' }, { status: 500 })
   }
 }
 
@@ -51,8 +48,6 @@ function getContentType(ext: string): string {
       return 'image/webp'
     case '.pdf':
       return 'application/pdf'
-    case '.zip':
-      return 'application/zip'
     default:
       return 'application/octet-stream'
   }

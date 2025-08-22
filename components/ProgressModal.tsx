@@ -206,7 +206,7 @@ export default function ProgressModal({ job, onClose }: ProgressModalProps) {
           {job.status === 'error' && (
             <div className="mb-6 p-4 bg-red-50 rounded-lg">
               <p className="text-sm text-red-800">
-                Something went wrong while processing your images. Please try again with different settings or contact support if the problem persists.
+                {job.message}
               </p>
             </div>
           )}

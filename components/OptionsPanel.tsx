@@ -50,6 +50,13 @@ const FileMinus = ({ className }: { className?: string }) => (
   </svg>
 )
 
+const Unlock = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+    <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+  </svg>
+)
+
 interface OptionsPanelProps {
   options: ConversionOptions
   onOptionsChange: (options: ConversionOptions) => void
@@ -84,7 +91,8 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
 
     if (fileTypes.hasPDFs) {
       operations.push(
-        { value: 'pdf-compress', label: 'Compress', desc: 'Reduce PDF file size', icon: FileMinus }
+        { value: 'pdf-compress', label: 'Compress PDF', desc: 'Reduce PDF file size', icon: FileMinus },
+        { value: 'pdf-remove-password', label: 'Remove Password', desc: 'Unlock protected PDF', icon: Unlock }
       )
     }
 
@@ -148,7 +156,7 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
     <div className="card sticky top-4 h-fit">
       <div className="mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Processing Options</h2>
-        <p className="text-sm sm:text-base text-gray-600">Choose how you want to process your images</p>
+        <p className="text-sm sm:text-base text-gray-600">Choose how you want to process your files</p>
       </div>
 
       {images.length > 0 ? (
@@ -212,7 +220,7 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
               <div className="space-y-3 sm:space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quality: {options.compressionQuality}%
+                    Quality: {options.compressionQuality || 80}%
                   </label>
                   <input
                     type="range"
@@ -354,6 +362,31 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                   <label htmlFor="optimizeImages" className="text-sm text-gray-700 cursor-pointer">
                     Optimize embedded images
                   </label>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* PDF Remove Password Options */}
+          {options.operation === 'pdf-remove-password' && (
+            <div className="mb-6 p-4 bg-yellow-50 rounded-lg">
+              <h3 className="font-medium text-gray-900 mb-3">PDF Unlock Settings</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    PDF Password
+                  </label>
+                  <input
+                    type="password"
+                    value={options.pdfPassword || ''}
+                    onChange={(e) => updateOption('pdfPassword', e.target.value)}
+                    className="input-field"
+                    placeholder="Enter current password"
+                  />
+                   <p className="text-xs text-gray-500 mt-1">
+                    The current password is required to unlock the PDF.
+                  </p>
                 </div>
               </div>
             </div>
@@ -592,16 +625,17 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                 if (options.operation === 'convert') IconComponent = FileImage
                 if (options.operation === 'pdf') IconComponent = FileImage
                 if (options.operation === 'pdf-compress') IconComponent = FileMinus
+                if (options.operation === 'pdf-remove-password') IconComponent = Unlock
                 if (options.operation === 'watermark') IconComponent = Type
                 return <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               })()}
-              {options.operation === 'pdf-compress' ? 'Process PDFs' : 'Process Images'}
+              Process Files
             </div>
           </button>
 
           {!canProcess && (
             <p className="text-xs sm:text-sm text-gray-500 text-center mt-2">
-              Upload images to start processing
+              Upload files to start processing
             </p>
           )}
         </>

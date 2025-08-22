@@ -1,4 +1,4 @@
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument } from 'pdf-lib-with-encrypt'
 import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
 import fs from 'fs/promises'
@@ -112,22 +112,11 @@ export class PdfCompressionService {
     optimizeImages: boolean = true
   ): Promise<Uint8Array> {
     // Basic PDF compression - pdf-lib has limited compression options
-    // For more advanced compression, we would need additional libraries like Ghostscript
     
-    // Set compression options if available
-    const saveOptions: any = {}
+    const saveOptions: { useObjectStreams?: boolean } = {};
     
-    // pdf-lib doesn't have built-in image compression, but we can set some options
-    if (optimizeImages) {
-      // This is a placeholder - actual image optimization would require
-      // extracting images, compressing them, and reinserting them
-      // For now, we'll just use basic PDF optimization
-    }
-
-    // Reduce quality by simplifying the PDF structure
-    if (quality < 90) {
-      // Remove unused objects and optimize structure
-      // pdf-lib automatically does some optimization
+    if (quality < 100) {
+      saveOptions.useObjectStreams = true;
     }
 
     return await pdfDoc.save(saveOptions)

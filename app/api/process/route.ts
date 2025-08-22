@@ -6,6 +6,7 @@ import { ImageResizeService } from '../../../services/imageResizeService'
 import { ImageToPdfService } from '../../../services/imageToPdfService'
 import { FormatConversionService } from '../../../services/formatConversionService'
 import { PdfCompressionService } from '../../../services/pdfCompressionService'
+import { PdfPasswordService } from '../../../services/pdfPasswordService'
 import connectDB from '../../../lib/mongodb'
 import { Job } from '../../../lib/models'
 import { v4 as uuidv4 } from 'uuid'
@@ -240,6 +241,23 @@ async function processFiles(files: File[], options: any, jobId: string) {
           originalSize: result.originalSize,
           processedSize: result.processedSize,
           compressionRatio: result.compressionRatio,
+          pageCount: result.pageCount,
+        })
+      }
+      break
+
+    case 'pdf-remove-password':
+      const pdfPasswordService = new PdfPasswordService()
+
+      for (const file of files) {
+        const buffer = Buffer.from(await file.arrayBuffer())
+        const result = await pdfPasswordService.removePassword(buffer, file.name, {
+          password: options.pdfPassword,
+        })
+        outputFiles.push({
+          fileName: result.processedName,
+          originalSize: result.originalSize,
+          processedSize: result.processedSize,
           pageCount: result.pageCount,
         })
       }

@@ -88,7 +88,7 @@ function SortableItem({ id, image, onRemove, options }: SortableItemProps) {
       />
       <div 
         {...listeners}
-        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity cursor-move"
+        className="absolute top-2 right-10 opacity-0 group-hover:opacity-100 transition-opacity cursor-move"
       >
         <div className="bg-white rounded-full p-1 shadow-md">
           <Move className="w-4 h-4 text-gray-500" />

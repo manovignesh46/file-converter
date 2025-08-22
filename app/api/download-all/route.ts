@@ -1,69 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server'
-import archiver from 'archiver'
 import path from 'path'
 import fs from 'fs'
+import archiver from 'archiver'
+
+const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads')
 
 export async function POST(request: NextRequest) {
   try {
     const { files } = await request.json()
-    
-    if (!files || !Array.isArray(files)) {
-      return NextResponse.json({ error: 'No files specified' }, { status: 400 })
+
+    if (!files || !Array.isArray(files) || files.length === 0) {
+      return NextResponse.json({ error: 'File names are required' }, { status: 400 })
     }
 
-    const processedDir = path.join(process.cwd(), 'public', 'processed')
-
-    // Create a readable stream
     const archive = archiver('zip', {
-      zlib: { level: 9 } // Maximum compression
+      zlib: { level: 9 }, // Sets the compression level.
     })
 
-    const chunks: Buffer[] = []
-    
-    archive.on('data', (chunk) => {
-      chunks.push(chunk)
-    })
+    // Create a pass-through stream to pipe the archive to the response
+    const readableStream = new ReadableStream({
+      start(controller) {
+        archive.on('data', (chunk) => {
+          controller.enqueue(chunk)
+        })
+        archive.on('end', () => {
+          controller.close()
+        })
+        archive.on('error', (err) => {
+          controller.error(err)
+        })
 
-    archive.on('error', (err) => {
-      console.error('Archive error:', err)
-      throw err
-    })
-
-    // Add files to archive
-    for (const filename of files) {
-      const filePath = path.join(processedDir, filename.trim())
-      
-      try {
-        // Check if file exists
-        if (fs.existsSync(filePath)) {
-          archive.file(filePath, { name: filename.trim() })
-        } else {
-          console.warn(`File not found: ${filename}`)
+        // Add files to the archive
+        for (const fileName of files) {
+          const filePath = path.join(UPLOAD_DIR, fileName)
+          if (fs.existsSync(filePath)) {
+            archive.file(filePath, { name: fileName })
+          }
         }
-      } catch (error) {
-        console.error(`Error adding file ${filename}:`, error)
-      }
-    }
 
-    // Finalize the archive
-    await archive.finalize()
+        archive.finalize()
+      },
+    })
 
-    // Convert chunks to buffer
-    const buffer = Buffer.concat(chunks)
-
-    // Set headers for ZIP download
     const headers = new Headers()
-    headers.set('Content-Type', 'application/zip')
-    headers.set('Content-Length', buffer.length.toString())
-    headers.set('Content-Disposition', 'attachment; filename="processed-images.zip"')
-    headers.set('Cache-Control', 'public, max-age=3600')
+    headers.append('Content-Type', 'application/zip')
+    headers.append('Content-Disposition', 'attachment; filename="processed-files.zip"')
 
-    return new NextResponse(buffer, { headers })
-
+    return new NextResponse(readableStream, {
+      status: 200,
+      headers,
+    })
   } catch (error) {
-    console.error('ZIP download error:', error)
+    console.error('Download all error:', error)
     return NextResponse.json(
-      { error: 'Failed to create ZIP file' },
+      { error: 'Failed to create zip file', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     )
   }
