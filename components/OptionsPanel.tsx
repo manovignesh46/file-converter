@@ -96,12 +96,6 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
       )
     }
 
-    if (fileTypes.hasImages && fileTypes.imageCount > 1) {
-      operations.push(
-        { value: 'pdf', label: 'Combine to PDF', desc: 'Merge images into PDF', icon: FileImage }
-      )
-    }
-
     return operations
   }
 
@@ -511,6 +505,25 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                       <option value="A3">A3</option>
                     </select>
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Images Per Page
+                    </label>
+                    <select
+                      value={options.pdfImagesPerPage || 1}
+                      onChange={(e) => updateOption('pdfImagesPerPage', parseInt(e.target.value) as 1 | 2)}
+                      className="input-field"
+                    >
+                      <option value={1}>One image per page</option>
+                      <option value={2}>Two images side-by-side ((Best for ID Cards))</option>
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {options.pdfImagesPerPage === 2 
+                        ? '📄 Perfect for ID cards! Front and back on the same page.'
+                        : '📄 Each image will be on a separate page.'}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -624,7 +637,6 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                 if (options.operation === 'compress') IconComponent = Zap
                 if (options.operation === 'resize') IconComponent = Resize
                 if (options.operation === 'convert') IconComponent = FileImage
-                if (options.operation === 'pdf') IconComponent = FileImage
                 if (options.operation === 'pdf-compress') IconComponent = FileMinus
                 if (options.operation === 'pdf-remove-password') IconComponent = Unlock
                 if (options.operation === 'watermark') IconComponent = Type

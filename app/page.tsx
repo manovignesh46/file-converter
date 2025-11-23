@@ -138,7 +138,7 @@ export default function Home() {
             File Converter Pro
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-            Convert, compress, resize, and process your images with our powerful online tool. 
+            Convert, compress, resize, remove password protection and process your images with our powerful online tool. 
             Drag, drop, and transform your images in seconds.
           </p>
         </div>

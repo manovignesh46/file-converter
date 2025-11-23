@@ -142,6 +142,7 @@ async function processFiles(files: File[], options: any, jobId: string) {
           pageSize: options.pdfPageSize || 'A4',
           orientation: 'portrait',
           quality: options.compressionQuality || 90,
+          imagesPerPage: options.pdfImagesPerPage || 1,
         })
         
         outputFiles.push({
@@ -187,6 +188,7 @@ async function processFiles(files: File[], options: any, jobId: string) {
         pageSize: options.pageSize || 'A4',
         orientation: options.orientation || 'portrait',
         quality: options.compressionQuality || 90,
+        imagesPerPage: options.pdfImagesPerPage || 1,
       })
       outputFiles.push({
         fileName: pdfResult.pdfName,

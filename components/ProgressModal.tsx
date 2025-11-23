@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { JobProgress } from '../types'
 
 // Simple icon components
@@ -37,6 +38,18 @@ interface ProgressModalProps {
 }
 
 export default function ProgressModal({ job, onClose }: ProgressModalProps) {
+  // Handle Escape key to close modal (only if not processing)
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && job.status !== 'processing') {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [job.status, onClose])
+
   const getStatusIcon = () => {
     switch (job.status) {
       case 'processing':

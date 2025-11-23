@@ -25,6 +25,7 @@ export interface ConversionOptions {
   optimizeImages?: boolean // New field for PDF compression
   pdfLayout?: 'fit' | 'original' | 'fill' // New field for PDF layout
   pdfPageSize?: 'A4' | 'Letter' | 'Legal' | 'A3' // New field for PDF page size
+  pdfImagesPerPage?: 1 | 2 // New field: number of images per page (1 = one per page, 2 = side-by-side)
   pdfPassword?: string
 }
 
