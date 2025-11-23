@@ -37,46 +37,6 @@ interface ProgressModalProps {
 }
 
 export default function ProgressModal({ job, onClose }: ProgressModalProps) {
-  const getFileName = (file: string | { fileName: string }): string => {
-    return typeof file === 'string' ? file : file.fileName
-  }
-
-  const handleDownloadFile = (file: string | { fileName: string }) => {
-    const fileName = getFileName(file)
-    const link = document.createElement('a')
-    link.href = `/api/download/${fileName}`
-    link.download = fileName
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  }
-
-  const handleDownloadAll = async () => {
-    if (job.outputFiles && job.outputFiles.length > 0) {
-      try {
-        const fileNames = job.outputFiles.map(getFileName)
-        const response = await fetch('/api/download-all', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ files: fileNames })
-        })
-        
-        if (response.ok) {
-          const blob = await response.blob()
-          const url = window.URL.createObjectURL(blob)
-          const link = document.createElement('a')
-          link.href = url
-          link.download = 'processed-images.zip'
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-          window.URL.revokeObjectURL(url)
-        }
-      } catch (error) {
-        console.error('Download failed:', error)
-      }
-    }
-  }
   const getStatusIcon = () => {
     switch (job.status) {
       case 'processing':
@@ -177,31 +137,6 @@ export default function ProgressModal({ job, onClose }: ProgressModalProps) {
             </div>
           )}
 
-          {/* Output Files */}
-          {job.status === 'completed' && job.outputFiles && (
-            <div className="mb-6">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">
-                Output Files ({job.outputFiles.length})
-              </h3>
-              <div className="space-y-2">
-                {job.outputFiles.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-2 bg-gray-50 rounded"
-                  >
-                    <span className="text-sm text-gray-700 truncate">{getFileName(file)}</span>
-                    <button 
-                      onClick={() => handleDownloadFile(file)}
-                      className="text-primary-500 hover:text-primary-600 text-sm font-medium"
-                    >
-                      Download
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {/* Error Details */}
           {job.status === 'error' && (
             <div className="mb-6 p-4 bg-red-50 rounded-lg">
@@ -214,20 +149,12 @@ export default function ProgressModal({ job, onClose }: ProgressModalProps) {
           {/* Actions */}
           <div className="flex space-x-3">
             {job.status === 'completed' && (
-              <>
-                <button
-                  onClick={onClose}
-                  className="flex-1 btn-primary"
-                >
-                  View Results
-                </button>
-                <button 
-                  onClick={handleDownloadAll}
-                  className="flex-1 btn-secondary"
-                >
-                  Download All
-                </button>
-              </>
+              <button
+                onClick={onClose}
+                className="w-full btn-primary"
+              >
+                View Results
+              </button>
             )}
             
             {job.status === 'error' && (

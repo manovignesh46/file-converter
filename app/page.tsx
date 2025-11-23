@@ -34,6 +34,18 @@ export default function Home() {
     setOptions(newOptions)
   }, [])
 
+  // Check if processing can proceed
+  const canProcess = useCallback(() => {
+    if (images.length === 0) return false
+    
+    // For PDF password removal, password is required
+    if (options.operation === 'pdf-remove-password') {
+      return !!(options.pdfPassword && options.pdfPassword.trim().length > 0)
+    }
+    
+    return true
+  }, [images.length, options.operation, options.pdfPassword])
+
   const handleProcess = async () => {
     if (images.length === 0) return
 
@@ -152,7 +164,7 @@ export default function Home() {
                 options={options}
                 onOptionsChange={handleOptionsChange}
                 onProcess={handleProcess}
-                canProcess={images.length > 0}
+                canProcess={canProcess()}
                 images={images}
               />
             </div>

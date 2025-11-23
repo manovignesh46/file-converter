@@ -375,7 +375,7 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    PDF Password
+                    PDF Password <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="password"
@@ -383,9 +383,10 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
                     onChange={(e) => updateOption('pdfPassword', e.target.value)}
                     className="input-field"
                     placeholder="Enter current password"
+                    required
                   />
                    <p className="text-xs text-gray-500 mt-1">
-                    The current password is required to unlock the PDF.
+                    <span className="text-red-500">Required:</span> The current password is needed to unlock the PDF.
                   </p>
                 </div>
               </div>
@@ -635,7 +636,12 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
 
           {!canProcess && (
             <p className="text-xs sm:text-sm text-gray-500 text-center mt-2">
-              Upload files to start processing
+              {images.length === 0 
+                ? 'Upload files to start processing'
+                : options.operation === 'pdf-remove-password' && (!options.pdfPassword || options.pdfPassword.trim().length === 0)
+                  ? 'Enter PDF password to continue'
+                  : 'Upload files to start processing'
+              }
             </p>
           )}
         </>
