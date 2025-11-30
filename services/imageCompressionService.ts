@@ -115,8 +115,8 @@ export class ImageCompressionService {
     let quality = 80
     let processedBuffer: Buffer
 
-    // Binary search for optimal quality
-    let minQuality = 10
+    // Binary search for optimal quality that GUARANTEES size <= target
+    let minQuality = 1  // Start from 1 instead of 10 for more aggressive compression
     let maxQuality = 100
     let bestBuffer: Buffer | null = null
     let bestQuality = quality
@@ -139,27 +139,69 @@ export class ImageCompressionService {
       processedBuffer = await tempPipeline.toBuffer()
 
       if (processedBuffer.length <= targetBytes) {
+        // Found a valid compression, save it
         bestBuffer = processedBuffer
         bestQuality = quality
+        // Try to find better quality while staying under limit
         minQuality = quality + 1
       } else {
+        // File too large, need more compression
         maxQuality = quality - 1
       }
     }
 
-    if (!bestBuffer) {
-      // If we can't reach target size, use lowest quality
+    // If still no solution found, try extreme measures
+    if (!bestBuffer || bestBuffer.length > targetBytes) {
+      // Try absolute minimum quality
       let tempPipeline = pipeline.clone()
       
       if (format === 'jpg' || format === 'jpeg') {
-        tempPipeline = tempPipeline.jpeg({ quality: 10 })
+        tempPipeline = tempPipeline.jpeg({ quality: 1 })
       } else if (format === 'png') {
         tempPipeline = tempPipeline.png({ compressionLevel: 9 })
       } else if (format === 'webp') {
-        tempPipeline = tempPipeline.webp({ quality: 10 })
+        tempPipeline = tempPipeline.webp({ quality: 1 })
       }
 
-      bestBuffer = await tempPipeline.toBuffer()
+      const minQualityBuffer = await tempPipeline.toBuffer()
+      
+      // If still too large, try resizing the image
+      if (minQualityBuffer.length > targetBytes) {
+        const metadata = await pipeline.metadata()
+        const originalWidth = metadata.width || 1000
+        const originalHeight = metadata.height || 1000
+        
+        // Calculate resize factor to get approximately to target size
+        const sizeFactor = Math.sqrt(targetBytes / minQualityBuffer.length)
+        const newWidth = Math.floor(originalWidth * sizeFactor * 0.9) // 0.9 safety margin
+        const newHeight = Math.floor(originalHeight * sizeFactor * 0.9)
+        
+        tempPipeline = pipeline.clone().resize(newWidth, newHeight, {
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        
+        if (format === 'jpg' || format === 'jpeg') {
+          tempPipeline = tempPipeline.jpeg({ quality: 1 })
+        } else if (format === 'png') {
+          tempPipeline = tempPipeline.png({ compressionLevel: 9 })
+        } else if (format === 'webp') {
+          tempPipeline = tempPipeline.webp({ quality: 1 })
+        }
+        
+        bestBuffer = await tempPipeline.toBuffer()
+      } else {
+        bestBuffer = minQualityBuffer
+      }
+    }
+
+    // Final verification - if still over target, throw error
+    if (bestBuffer.length > targetBytes) {
+      throw new Error(
+        `Unable to compress image to ${Math.round(targetBytes / 1024)} KB. ` +
+        `Minimum achievable size is ${Math.round(bestBuffer.length / 1024)} KB. ` +
+        `Try converting to WebP format or use a larger target size.`
+      )
     }
 
     await fs.writeFile(outputPath, bestBuffer)

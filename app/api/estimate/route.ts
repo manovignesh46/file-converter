@@ -3,6 +3,7 @@ import { ImageCompressionService } from '../../../services/imageCompressionServi
 import { ImageResizeService } from '../../../services/imageResizeService'
 import { ImageToPdfService } from '../../../services/imageToPdfService'
 import { FormatConversionService } from '../../../services/formatConversionService'
+import { PdfCompressionService } from '../../../services/pdfCompressionService'
 
 export async function POST(request: NextRequest) {
   try {
@@ -59,6 +60,22 @@ export async function POST(request: NextRequest) {
 
       case 'watermark':
         // Watermark doesn't significantly change size
+        estimatedSize = buffer.length
+        break
+
+      case 'pdf-compress':
+        const pdfCompressionService = new PdfCompressionService()
+        estimatedSize = await pdfCompressionService.estimateCompressedSize(buffer, {
+          quality: options.compressionQuality,
+          targetSize: options.targetSize,
+          targetSizeUnit: options.targetSizeUnit,
+          removeMetadata: options.removeMetadata,
+          optimizeImages: options.optimizeImages,
+        })
+        break
+
+      case 'pdf-remove-password':
+        // Password removal doesn't change size significantly
         estimatedSize = buffer.length
         break
 

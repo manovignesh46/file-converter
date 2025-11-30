@@ -212,63 +212,181 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
               <h3 className="font-medium text-gray-900 mb-3">Compression Settings</h3>
               
               <div className="space-y-3 sm:space-y-4">
+                {/* Compression Mode Selection */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quality: {options.compressionQuality || 80}%
+                    Compression Mode
                   </label>
-                  <input
-                    type="range"
-                    min="10"
-                    max="100"
-                    value={options.compressionQuality || 80}
-                    onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>Smallest</span>
-                    <span>Best Quality</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onOptionsChange({
+                          ...options,
+                          targetSize: undefined,
+                          targetSizeUnit: undefined,
+                        })
+                      }}
+                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
+                        options.targetSize === undefined
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      By Quality
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onOptionsChange({
+                          ...options,
+                          targetSize: 50,
+                          targetSizeUnit: 'KB',
+                        })
+                      }}
+                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
+                        options.targetSize !== undefined
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      By File Size
+                    </button>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="targetSize"
-                    checked={!!options.targetSize}
-                    onChange={(e) => {
-                      if (!e.target.checked) {
-                        updateOption('targetSize', undefined)
-                        updateOption('targetSizeUnit', undefined)
-                      } else {
-                        updateOption('targetSize', 500)
-                        updateOption('targetSizeUnit', 'KB')
-                      }
-                    }}
-                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
-                  />
-                  <label htmlFor="targetSize" className="text-xs sm:text-sm text-gray-700 cursor-pointer">
-                    Target specific size
-                  </label>
-                </div>
-
-                {options.targetSize && (
-                  <div className="flex space-x-2">
+                {/* Quality Mode */}
+                {options.targetSize === undefined && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quality: {options.compressionQuality || 80}%
+                    </label>
                     <input
-                      type="number"
-                      value={options.targetSize}
-                      onChange={(e) => updateOption('targetSize', parseInt(e.target.value))}
-                      className="input-field flex-1 text-sm"
-                      min="1"
-                      placeholder="Size"
+                      type="range"
+                      min="10"
+                      max="100"
+                      value={options.compressionQuality || 80}
+                      onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                     />
-                    <select
-                      value={options.targetSizeUnit}
-                      onChange={(e) => updateOption('targetSizeUnit', e.target.value)}
-                      className="input-field text-sm w-20"
-                    >
-                      <option value="KB">KB</option>
-                      <option value="MB">MB</option>
-                    </select>
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>Smallest</span>
+                      <span>Best Quality</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Target Size Mode */}
+                {options.targetSize !== undefined && (
+                  <div className="space-y-3">
+                    {/* Quick Presets */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Quick Presets
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOptionsChange({
+                              ...options,
+                              targetSize: 50,
+                              targetSizeUnit: 'KB',
+                            })
+                          }}
+                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
+                            options.targetSize === 50 && options.targetSizeUnit === 'KB'
+                              ? 'bg-green-600 text-white border-green-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          50 KB
+                          <span className="block text-xs opacity-75">Gov. Image</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOptionsChange({
+                              ...options,
+                              targetSize: 100,
+                              targetSizeUnit: 'KB',
+                            })
+                          }}
+                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
+                            options.targetSize === 100 && options.targetSizeUnit === 'KB'
+                              ? 'bg-green-600 text-white border-green-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          100 KB
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOptionsChange({
+                              ...options,
+                              targetSize: 200,
+                              targetSizeUnit: 'KB',
+                            })
+                          }}
+                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
+                            options.targetSize === 200 && options.targetSizeUnit === 'KB'
+                              ? 'bg-green-600 text-white border-green-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          200 KB
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOptionsChange({
+                              ...options,
+                              targetSize: 500,
+                              targetSizeUnit: 'KB',
+                            })
+                          }}
+                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
+                            options.targetSize === 500 && options.targetSizeUnit === 'KB'
+                              ? 'bg-green-600 text-white border-green-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          500 KB
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Custom Size Input */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Custom Target Size
+                      </label>
+                      <div className="flex space-x-2">
+                        <input
+                          type="number"
+                          value={options.targetSize || ''}
+                          onChange={(e) => {
+                            const value = e.target.value === '' ? 0 : parseInt(e.target.value)
+                            updateOption('targetSize', value)
+                          }}
+                          className="input-field flex-1 text-sm"
+                          min="1"
+                          placeholder="Enter size"
+                        />
+                        <select
+                          value={options.targetSizeUnit}
+                          onChange={(e) => updateOption('targetSizeUnit', e.target.value)}
+                          className="input-field text-sm w-20"
+                        >
+                          <option value="KB">KB</option>
+                          <option value="MB">MB</option>
+                        </select>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        💡 Tip: Govt. sites often require images under 50 KB
+                      </p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -281,66 +399,181 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
               <h3 className="font-medium text-gray-900 mb-3">PDF Compression Settings</h3>
               
               <div className="space-y-4">
+                {/* Compression Mode Selection */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Quality: {options.compressionQuality || 75}%
+                    Compression Mode
                   </label>
-                  <input
-                    type="range"
-                    min="10"
-                    max="100"
-                    value={options.compressionQuality || 75}
-                    onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>Smallest File</span>
-                    <span>Best Quality</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onOptionsChange({
+                          ...options,
+                          targetSize: undefined,
+                          targetSizeUnit: undefined,
+                        })
+                      }}
+                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
+                        options.targetSize === undefined
+                          ? 'bg-red-600 text-white border-red-600'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      By Quality
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onOptionsChange({
+                          ...options,
+                          targetSize: 200,
+                          targetSizeUnit: 'KB',
+                        })
+                      }}
+                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
+                        options.targetSize !== undefined
+                          ? 'bg-red-600 text-white border-red-600'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      By File Size
+                    </button>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="pdfTargetSize"
-                    checked={!!options.targetSize}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        updateOption('targetSize', 1)
-                        updateOption('targetSizeUnit', 'MB')
-                      } else {
-                        updateOption('targetSize', undefined)
-                        updateOption('targetSizeUnit', undefined)
-                      }
-                    }}
-                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
-                  />
-                  <label htmlFor="pdfTargetSize" className="text-sm text-gray-700 cursor-pointer">
-                    Target file size
-                  </label>
-                </div>
-
-                {options.targetSize && (
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <input
-                        type="number"
-                        min="0.1"
-                        step="0.1"
-                        value={options.targetSize || 1}
-                        onChange={(e) => updateOption('targetSize', parseFloat(e.target.value))}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                      />
+                {/* Quality Mode */}
+                {options.targetSize === undefined && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Quality: {options.compressionQuality || 75}%
+                    </label>
+                    <input
+                      type="range"
+                      min="10"
+                      max="100"
+                      value={options.compressionQuality || 75}
+                      onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>Smallest File</span>
+                      <span>Best Quality</span>
                     </div>
+                  </div>
+                )}
+
+                {/* Target Size Mode */}
+                {options.targetSize !== undefined && (
+                  <div className="space-y-3">
+                    {/* Quick Presets */}
                     <div>
-                      <select
-                        value={options.targetSizeUnit || 'MB'}
-                        onChange={(e) => updateOption('targetSizeUnit', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                      >
-                        <option value="KB">KB</option>
-                        <option value="MB">MB</option>
-                      </select>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Quick Presets
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOptionsChange({
+                              ...options,
+                              targetSize: 200,
+                              targetSizeUnit: 'KB',
+                            })
+                          }}
+                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
+                            options.targetSize === 200 && options.targetSizeUnit === 'KB'
+                              ? 'bg-green-600 text-white border-green-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          200 KB
+                          <span className="block text-xs opacity-75">Gov. PDF</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOptionsChange({
+                              ...options,
+                              targetSize: 500,
+                              targetSizeUnit: 'KB',
+                            })
+                          }}
+                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
+                            options.targetSize === 500 && options.targetSizeUnit === 'KB'
+                              ? 'bg-green-600 text-white border-green-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          500 KB
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOptionsChange({
+                              ...options,
+                              targetSize: 1,
+                              targetSizeUnit: 'MB',
+                            })
+                          }}
+                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
+                            options.targetSize === 1 && options.targetSizeUnit === 'MB'
+                              ? 'bg-green-600 text-white border-green-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          1 MB
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            onOptionsChange({
+                              ...options,
+                              targetSize: 2,
+                              targetSizeUnit: 'MB',
+                            })
+                          }}
+                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
+                            options.targetSize === 2 && options.targetSizeUnit === 'MB'
+                              ? 'bg-green-600 text-white border-green-600'
+                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          2 MB
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Custom Size Input */}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Custom Target Size
+                      </label>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="number"
+                          min="0.1"
+                          step="0.1"
+                          value={options.targetSize || ''}
+                          onChange={(e) => {
+                            const value = e.target.value === '' ? 0 : parseFloat(e.target.value)
+                            updateOption('targetSize', value)
+                          }}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                          placeholder="Enter size"
+                        />
+                        <select
+                          value={options.targetSizeUnit || 'MB'}
+                          onChange={(e) => updateOption('targetSizeUnit', e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                        >
+                          <option value="KB">KB</option>
+                          <option value="MB">MB</option>
+                        </select>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        💡 Tip: Govt. sites often require PDFs under 200 KB
+                      </p>
                     </div>
                   </div>
                 )}
