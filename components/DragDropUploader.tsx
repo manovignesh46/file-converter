@@ -24,31 +24,34 @@ import { CSS } from '@dnd-kit/utilities'
 import PreviewCard from './PreviewCard'
 import { ImageFile, ConversionOptions } from '../types'
 
-// Simple icon components
+// Modern icon components
 const Upload = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-    <polyline points="17,8 12,3 7,8"></polyline>
-    <line x1="12" y1="3" x2="12" y2="15"></line>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
   </svg>
 )
 
 const ImageIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-    <polyline points="21,15 16,10 5,21"></polyline>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+  </svg>
+)
+
+const PdfIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
   </svg>
 )
 
 const Move = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <polyline points="5,9 2,12 5,15"></polyline>
-    <polyline points="9,5 12,2 15,5"></polyline>
-    <polyline points="15,19 12,22 9,19"></polyline>
-    <polyline points="19,9 22,12 19,15"></polyline>
-    <line x1="2" y1="12" x2="22" y2="12"></line>
-    <line x1="12" y1="2" x2="12" y2="22"></line>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+)
+
+const Trash = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
   </svg>
 )
 
@@ -81,16 +84,16 @@ function SortableItem({ id, image, onRemove, options }: SortableItemProps) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} className="relative group">
-      <PreviewCard 
-        image={image} 
-        onRemove={onRemove}
-        options={options}
-      />
-      <div 
-        {...listeners}
-        className="absolute top-2 right-10 opacity-0 group-hover:opacity-100 transition-opacity cursor-move"
-      >
-        <div className="bg-white rounded-full p-1 shadow-md">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
+        <PreviewCard 
+          image={image} 
+          onRemove={onRemove}
+          options={options}
+        />
+        <div 
+          {...listeners}
+          className="absolute top-2 right-10 opacity-0 group-hover:opacity-100 transition-opacity cursor-move p-1.5 bg-white/90 backdrop-blur rounded-full shadow-sm hover:bg-gray-100"
+        >
           <Move className="w-4 h-4 text-gray-500" />
         </div>
       </div>
@@ -234,113 +237,115 @@ export default function DragDropUploader({ images, onImagesChange, options }: Dr
   }, [images, onImagesChange])
 
   return (
-    <div className="card">
-      <div className="mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-          {options.operation === 'pdf-compress' ? 'Upload PDFs' : 'Upload Images'}
-        </h2>
-        <p className="text-sm sm:text-base text-gray-600">
-          {options.operation === 'pdf-compress' 
-            ? 'Drag and drop your PDF files here, or click to select files.'
-            : 'Drag and drop your images here, or click to select files. You can reorder them by dragging.'
-          }
-        </p>
-      </div>
-
-      <div
-        {...getRootProps()}
-        className={`drag-zone ${isDragActive ? 'active' : ''} ${images.length > 0 ? 'mb-4 sm:mb-6' : ''} 
-                   p-6 sm:p-8 cursor-pointer`}
-      >
-        <input {...getInputProps()} />
-        <div className="flex flex-col items-center">
-          <div className="bg-primary-100 p-3 sm:p-4 rounded-full mb-3 sm:mb-4">
-            {isDragActive ? (
-              <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600 animate-bounce-light" />
-            ) : (
-              <ImageIcon className="w-6 h-6 sm:w-8 sm:h-8 text-primary-600" />
-            )}
-          </div>
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 text-center">
-            {isDragActive 
-              ? (options.operation === 'pdf-compress' ? 'Drop PDFs here' : 'Drop images here')
-              : (options.operation === 'pdf-compress' ? 'Upload your PDFs' : 'Upload your images')
-            }
-          </h3>
-          <p className="text-sm sm:text-base text-gray-500 text-center px-4">
-            {isDragActive 
-              ? 'Release to upload your files'
-              : (options.operation === 'pdf-compress' 
-                  ? 'Drag & drop PDF files here, or click to select'
-                  : 'Drag & drop images here, or click to select'
-                )
-            }
-          </p>
-          <p className="text-xs sm:text-sm text-gray-400 mt-2 text-center px-4">
-            Supports: JPG, PNG, WebP, GIF, BMP, PDF (Max 50MB per file)
-          </p>
-        </div>
-      </div>
-
-      {images.length > 0 && (
-        <div>
-          <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+    <div className="h-full flex flex-col">
+      <div className="card h-full flex flex-col border-0 bg-white/50 backdrop-blur-xl shadow-xl ring-1 ring-black/5">
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              {options.operation === 'pdf-compress' ? <PdfIcon className="w-6 h-6 text-red-500"/> : <ImageIcon className="w-6 h-6 text-primary-500"/>}
+              {options.operation === 'pdf-compress' ? 'Upload PDFs' : 'Upload Images'}
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
               {options.operation === 'pdf-compress' 
-                ? `Uploaded PDFs (${images.length})`
-                : `Uploaded Images (${images.length})`
+                ? 'Compress and optimize your PDF documents'
+                : 'Process your images locally and securely'
               }
-            </h3>
-            <button
+            </p>
+          </div>
+          {images.length > 0 && (
+             <button
               onClick={() => onImagesChange([])}
-              className="text-red-500 hover:text-red-700 text-sm font-medium px-2 py-1 rounded"
+              className="text-red-500 hover:text-red-600 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5"
             >
+              <Trash className="w-4 h-4" />
               Clear All
             </button>
-          </div>
-          
-          <DndContext 
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext items={images.map(img => img.id)} strategy={verticalListSortingStrategy}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-6">
-                {images.map((image) => (
-                  <SortableItem
-                    key={image.id}
-                    id={image.id}
-                    image={image}
-                    onRemove={removeImage}
-                    options={options}
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-          
-          <div className="mt-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center justify-between text-xs sm:text-sm mb-1">
-              <span className="text-gray-600">Total original size:</span>
-              <span className="font-medium">
-                {(images.reduce((sum, img) => sum + img.originalSize, 0) / (1024 * 1024)).toFixed(2)} MB
-              </span>
+          )}
+        </div>
+
+        <div
+          {...getRootProps()}
+          className={`upload-zone flex-1 flex flex-col items-center justify-center min-h-[300px] ${
+            isDragActive ? 'active border-primary-500 bg-primary-50/50' : 'border-gray-200'
+          } ${images.length > 0 ? 'min-h-[160px] mb-8' : ''}`}
+        >
+          <input {...getInputProps()} />
+          <div className="flex flex-col items-center max-w-sm mx-auto p-4">
+            <div className={`p-4 rounded-2xl mb-4 transition-all duration-300 ${
+              isDragActive ? 'bg-primary-100 scale-110' : 'bg-primary-50 group-hover:bg-primary-100'
+            }`}>
+              {isDragActive ? (
+                <Upload className="w-10 h-10 text-primary-600 animate-bounce" />
+              ) : (
+                <Upload className="w-10 h-10 text-primary-500" />
+              )}
             </div>
-            <div className="flex items-center justify-between text-xs sm:text-sm mb-1">
-              <span className="text-gray-600">Estimated processed size:</span>
-              <span className="font-medium text-primary-600">
-                {(images.reduce((sum, img) => sum + (img.estimatedSize || img.originalSize), 0) / (1024 * 1024)).toFixed(2)} MB
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-xs sm:text-sm">
-              <span className="text-gray-600">Estimated compression:</span>
-              <span className="font-medium text-green-600">
-                {Math.round((1 - images.reduce((sum, img) => sum + (img.estimatedSize || img.originalSize), 0) / images.reduce((sum, img) => sum + img.originalSize, 0)) * 100)}%
-              </span>
-            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 text-center">
+              {isDragActive 
+                ? 'Drop files now'
+                : 'Click or Drag files here'
+              }
+            </h3>
+            <p className="text-sm text-gray-500 text-center leading-relaxed">
+              Supports JPG, PNG, WebP (Images) and PDF documents. 
+              <br/>Max file size: 50MB
+            </p>
           </div>
         </div>
-      )}
+
+        {images.length > 0 && (
+          <div className="mt-auto animate-fade-in">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                Files Queue ({images.length})
+              </h3>
+            </div>
+            
+            <DndContext 
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext items={images.map(img => img.id)} strategy={verticalListSortingStrategy}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {images.map((image) => (
+                    <SortableItem
+                      key={image.id}
+                      id={image.id}
+                      image={image}
+                      onRemove={removeImage}
+                      options={options}
+                    />
+                  ))}
+                </div>
+              </SortableContext>
+            </DndContext>
+            
+            <div className="mt-6 p-4 bg-gray-50/80 rounded-xl border border-gray-100">
+              <div className="grid grid-cols-3 gap-4 text-center divide-x divide-gray-200">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Original Size</p>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {(images.reduce((sum, img) => sum + img.originalSize, 0) / (1024 * 1024)).toFixed(2)} MB
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Estimated Size</p>
+                  <p className="text-sm font-semibold text-primary-600">
+                    {(images.reduce((sum, img) => sum + (img.estimatedSize || img.originalSize), 0) / (1024 * 1024)).toFixed(2)} MB
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Savings</p>
+                  <p className="text-sm font-semibold text-green-600">
+                    {Math.round((1 - images.reduce((sum, img) => sum + (img.estimatedSize || img.originalSize), 0) / images.reduce((sum, img) => sum + img.originalSize, 0)) * 100)}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

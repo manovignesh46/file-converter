@@ -129,29 +129,35 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen pb-20">
       <Header />
       
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 max-w-7xl">
-        <div className="text-center mb-8 sm:mb-12">
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-gray-900 mb-4">
-            File Converter Pro
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 max-w-7xl animate-fade-in">
+        <div className="text-center mb-12 sm:mb-16">
+          <span className="inline-block py-1 px-3 rounded-full bg-primary-100 text-primary-700 text-sm font-semibold mb-4 animate-slide-up">
+            #1 Free Online Converter
+          </span>
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-gray-900 mb-6 animate-slide-up animate-delay-100">
+            Convert Files <br className="hidden sm:block" />
+            <span className="text-gradient">With Superpowers</span>
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-            Convert, compress, resize, remove password protection and process your images with our powerful online tool. 
-            Drag, drop, and transform your images in seconds.
+          <p className="text-lg sm:text-xl text-gray-500 max-w-2xl mx-auto animate-slide-up animate-delay-200 leading-relaxed px-4">
+            Compress, resize, and transform your images and PDFs securely. 
+            All processing happens locally or on secure servers.
           </p>
         </div>
 
         {results.length > 0 ? (
-          <ResultsView 
-            files={results} 
-            onStartNew={clearResults}
-            isCleaningUp={isCleaningUp}
-          />
+          <div className="animate-scale-in">
+            <ResultsView 
+              files={results} 
+              onStartNew={clearResults}
+              isCleaningUp={isCleaningUp}
+            />
+          </div>
         ) : (
-          <div className="flex flex-col xl:grid xl:grid-cols-4 gap-6 lg:gap-8 max-w-6xl mx-auto">
-            <div className="xl:col-span-3 order-1">
+          <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto animate-slide-up animate-delay-300">
+            <div className="lg:w-2/3 order-1 h-full">
               <DragDropUploader 
                 images={images}
                 onImagesChange={handleImagesChange}
@@ -159,14 +165,16 @@ export default function Home() {
               />
             </div>
             
-            <div className="xl:col-span-1 order-2">
-              <OptionsPanel 
-                options={options}
-                onOptionsChange={handleOptionsChange}
-                onProcess={handleProcess}
-                canProcess={canProcess()}
-                images={images}
-              />
+            <div className="lg:w-1/3 order-2">
+              <div className="sticky top-6">
+                <OptionsPanel 
+                  options={options}
+                  onOptionsChange={handleOptionsChange}
+                  onProcess={handleProcess}
+                  canProcess={canProcess()}
+                  images={images}
+                />
+              </div>
             </div>
           </div>
         )}

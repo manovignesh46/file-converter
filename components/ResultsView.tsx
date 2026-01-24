@@ -2,46 +2,40 @@
 
 import { useState } from 'react'
 
-// Simple icon components
+// Modern icon components
 const Download = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-    <polyline points="7,10 12,15 17,10"></polyline>
-    <line x1="12" y1="15" x2="12" y2="3"></line>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
   </svg>
 )
 
 const FileImage = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-    <polyline points="14,2 14,8 20,8"></polyline>
-    <circle cx="10" cy="13" r="2"></circle>
-    <path d="m20 17-1.1-1.1a2 2 0 0 0-2.83.02L14 18"></path>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
   </svg>
 )
 
 const Archive = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <polyline points="21,8 21,21 3,21 3,8"></polyline>
-    <rect x="1" y="3" width="22" height="5"></rect>
-    <line x1="10" y1="12" x2="14" y2="12"></line>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
   </svg>
 )
 
 const RotateCcw = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <polyline points="1,4 1,10 7,10"></polyline>
-    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
   </svg>
 )
 
 const Share2 = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <circle cx="18" cy="5" r="3"></circle>
-    <circle cx="6" cy="12" r="3"></circle>
-    <circle cx="18" cy="19" r="3"></circle>
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+  </svg>
+)
+
+const CheckCircle = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
   </svg>
 )
 
@@ -163,8 +157,6 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
 
   const formatFileName = (file: FileType): string => {
     const fileName = getFileName(file)
-    // The filename now contains meaningful information, so we can display it as-is
-    // Just remove the unique ID suffix for cleaner display
     return fileName.replace(/_[a-f0-9]{8}\./i, '.')
   }
 
@@ -173,41 +165,65 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
     return fileName.split('.').pop()?.toUpperCase() || 'UNKNOWN'
   }
 
-
-
   return (
-    <div className="card max-w-6xl mx-auto">
-      <div className="text-center mb-6 sm:mb-8">
-        <div className="bg-green-100 p-3 sm:p-4 rounded-full w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-          <FileImage className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+    <div className="card border-0 shadow-xl ring-1 ring-black/5 bg-white/70 backdrop-blur-xl animate-fade-in">
+      <div className="text-center mb-8 sm:mb-10 pt-4">
+        <div className="bg-green-100 p-4 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center shadow-inner animate-bounce-light">
+          <CheckCircle className="w-10 h-10 text-green-600" />
         </div>
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+        <h2 className="text-3xl font-bold text-gray-900 mb-3">
           Processing Complete!
         </h2>
-        <p className="text-sm sm:text-base text-gray-600 px-4">
-          Your {files.length} image{files.length !== 1 ? 's have' : ' has'} been successfully processed.
+        <p className="text-lg text-gray-600 px-4 max-w-2xl mx-auto leading-relaxed">
+          Your {files.length} image{files.length !== 1 ? 's' : ''} {files.length !== 1 ? 'have' : 'has'} been successfully processed and {files.length !== 1 ? 'are' : 'is'} ready for download.
         </p>
       </div>
 
-      {/* Results Grid */}
-      <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-        <div className="flex items-center justify-between">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-            Processed Files ({files.length})
-          </h3>
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-            <button
-              onClick={handleDownloadAll}
-              className="btn-primary text-xs sm:text-sm px-3 sm:px-4 py-2 flex items-center justify-center"
-            >
-              <Archive className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Download All (ZIP)</span>
-              <span className="sm:hidden">All ZIP</span>
-            </button>
+      {/* Summary Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8 sm:mb-10 max-w-4xl mx-auto">
+        <div className="bg-white/60 p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+          <div className="text-3xl font-bold text-gray-900 mb-1">{summaryStats.filesProcessed}</div>
+          <div className="text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wide">Processed</div>
+        </div>
+        <div className="bg-white/60 p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+          <div className={`text-3xl font-bold ${summaryStats.hasCompressionData ? 'text-green-600' : 'text-gray-400'}`}>
+            {summaryStats.averageReduction}
           </div>
+          <div className="text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wide">Reduced</div>
+        </div>
+        <div className="bg-white/60 p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+          <div className={`text-3xl font-bold ${summaryStats.hasCompressionData ? 'text-primary-600' : 'text-gray-400'}`}>
+            {summaryStats.totalSize}
+          </div>
+          <div className="text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wide">Final Size</div>
+        </div>
+        <div className="bg-white/60 p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
+          <div className={`text-3xl font-bold ${summaryStats.hasCompressionData ? 'text-purple-600' : 'text-gray-400'}`}>
+            {summaryStats.spaceSaved}
+          </div>
+          <div className="text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wide">Saved</div>
+        </div>
+      </div>
+
+      <div className="border-t border-gray-100 my-8"></div>
+
+      {/* Results Grid */}
+      <div className="space-y-6 mb-10">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+            <FileImage className="w-6 h-6 text-gray-400" />
+            Processed Files
+          </h3>
+          <button
+            onClick={handleDownloadAll}
+            className="w-full sm:w-auto btn-primary bg-gray-900 hover:bg-black text-white shadow-lg shadow-gray-900/20"
+          >
+            <Archive className="w-5 h-5 mr-2" />
+            Download All (ZIP)
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {files.map((file, index) => {
             const fileName = getFileName(file)
             const hasError = imageErrors[fileName] || false
@@ -215,47 +231,64 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
             return (
               <div
                 key={fileName}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+                className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
               >
                 {/* File Preview */}
-                <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
                   {!hasError ? (
                     <img
                       src={`/api/preview/${encodeURIComponent(fileName)}`}
                       alt={formatFileName(file)}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       onError={() => handleImageError(fileName)}
                       onLoad={() => handleImageLoad(fileName)}
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gray-200 flex items-center justify-center">
-                      <FileImage className="w-8 h-8 text-gray-400" />
+                    <div className="absolute inset-0 bg-gray-50 flex items-center justify-center p-6 text-center">
+                      <div className="text-gray-300">
+                        <FileImage className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                        <span className="text-xs">No Preview</span>
+                      </div>
                     </div>
                   )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                    <button
+                      onClick={() => handleDownload(file)}
+                      className="w-full bg-white text-gray-900 font-medium py-2 rounded-lg text-sm shadow-sm hover:bg-gray-50 flex items-center justify-center"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Quick Download
+                    </button>
+                  </div>
                 </div>
 
                 {/* File Info */}
                 <div className="p-4">
-                  <h4 className="font-medium text-gray-900 mb-1 truncate">
-                    {formatFileName(file)}
-                  </h4>
-                  <p className="text-sm text-gray-500 mb-3">
-                    Format: {getFileExtension(file)} • Size: {getFileSize(file)}
-                  </p>
-
-                  {/* Actions */}
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => handleDownload(file)}
-                      className="flex-1 btn-primary text-sm py-2"
-                    >
-                      <Download className="w-4 h-4 mr-1" />
-                      Download
-                    </button>
-                    <button className="btn-secondary text-sm py-2 px-3">
-                      <Share2 className="w-4 h-4" />
-                    </button>
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-semibold text-gray-900 truncate flex-1 mr-2" title={formatFileName(file)}>
+                      {formatFileName(file)}
+                    </h4>
+                    <span className="text-[10px] font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded-md uppercase tracking-wider">
+                      {getFileExtension(file)}
+                    </span>
                   </div>
+                  
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <span>{getFileSize(file)}</span>
+                    {typeof file === 'object' && file.compressionRatio && (
+                      <span className="text-green-600 font-medium bg-green-50 px-2 py-0.5 rounded-full text-xs">
+                        -{Math.round((1 - (file.compressionRatio || 1)) * 100)}%
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => handleDownload(file)}
+                    className="w-full btn-secondary py-2 text-sm justify-center border-gray-200 hover:border-primary-200 hover:text-primary-600"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Download
+                  </button>
                 </div>
               </div>
             )
@@ -263,80 +296,19 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
         </div>
       </div>
 
-      {/* Summary Stats */}
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
-        <h3 className="font-medium text-gray-900 mb-3">Processing Summary</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div>
-            <div className="text-2xl font-bold text-primary-600">{summaryStats.filesProcessed}</div>
-            <div className="text-sm text-gray-500">Files Processed</div>
-          </div>
-          <div>
-            <div className={`text-2xl font-bold ${summaryStats.hasCompressionData ? 'text-green-600' : 'text-gray-400'}`}>
-              {summaryStats.averageReduction}
-            </div>
-            <div className="text-sm text-gray-500">Size Reduction</div>
-          </div>
-          <div>
-            <div className={`text-2xl font-bold ${summaryStats.hasCompressionData ? 'text-blue-600' : 'text-gray-400'}`}>
-              {summaryStats.totalSize}
-            </div>
-            <div className="text-sm text-gray-500">Total Size</div>
-          </div>
-          <div>
-            <div className={`text-2xl font-bold ${summaryStats.hasCompressionData ? 'text-purple-600' : 'text-gray-400'}`}>
-              {summaryStats.spaceSaved}
-            </div>
-            <div className="text-sm text-gray-500">Space Saved</div>
-          </div>
-        </div>
-        {!summaryStats.hasCompressionData && (
-          <div className="mt-3 text-sm text-gray-500 text-center">
-            Detailed metrics available for files with compression data
-          </div>
-        )}
-      </div>
-
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <button
-          onClick={onStartNew}
-          disabled={isCleaningUp}
-          className={`flex-1 btn-primary flex items-center justify-center ${
-            isCleaningUp ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
-        >
-          <RotateCcw className={`w-5 h-5 mr-2 ${isCleaningUp ? 'animate-spin' : ''}`} />
-          {isCleaningUp ? 'Cleaning up...' : 'Process More Images'}
-        </button>
-        <button
-          onClick={handleDownloadAll}
-          className="flex-1 btn-secondary flex items-center justify-center"
-        >
-          <Archive className="w-5 h-5 mr-2" />
-          Download All as ZIP
-        </button>
-      </div>
-
-      {/* Additional Options */}
-      <div className="mt-6 pt-6 border-t border-gray-200">
-        <h3 className="font-medium text-gray-900 mb-3">What&apos;s Next?</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <FileImage className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <h4 className="font-medium text-gray-900 mb-1">Convert Format</h4>
-            <p className="text-sm text-gray-600">Convert to different image formats</p>
-          </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <Archive className="w-8 h-8 text-green-600 mx-auto mb-2" />
-            <h4 className="font-medium text-gray-900 mb-1">Batch Process</h4>
-            <p className="text-sm text-gray-600">Process multiple images at once</p>
-          </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <Share2 className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-            <h4 className="font-medium text-gray-900 mb-1">Share & Collaborate</h4>
-            <p className="text-sm text-gray-600">Share your processed images</p>
-          </div>
+      <div className="bg-gray-50/50 -mx-6 -mb-6 p-6 sm:p-8 rounded-b-2xl border-t border-gray-100 mt-8">
+        <div className="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
+          <button
+            onClick={onStartNew}
+            disabled={isCleaningUp}
+            className={`flex-1 btn-primary py-3.5 flex items-center justify-center text-base font-semibold shadow-lg shadow-primary-500/20 ${
+              isCleaningUp ? 'opacity-75 cursor-not-allowed' : ''
+            }`}
+          >
+            <RotateCcw className={`w-5 h-5 mr-2 ${isCleaningUp ? 'animate-spin' : ''}`} />
+            {isCleaningUp ? 'Cleaning up...' : 'Process More Files'}
+          </button>
         </div>
       </div>
     </div>

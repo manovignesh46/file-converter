@@ -3,57 +3,47 @@
 import { useState, useEffect, useCallback } from 'react'
 import { ConversionOptions } from '../types'
 
-// Simple icon components as fallbacks
+// Modern icon components
 const Settings = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="3"></circle>
-    <path d="M12 1v6m0 6v6"></path>
-    <path d="m15.5 5.5-3 3-3-3"></path>
-    <path d="m15.5 18.5-3-3-3 3"></path>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
   </svg>
 )
 
 const Zap = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <polygon points="13,2 3,14 12,14 11,22 21,10 12,10"></polygon>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
   </svg>
 )
 
 const Resize = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
   </svg>
 )
 
 const FileImage = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-    <polyline points="14,2 14,8 20,8"></polyline>
-    <circle cx="10" cy="13" r="2"></circle>
-    <path d="m20 17-1.1-1.1a2 2 0 0 0-2.83.02L14 18"></path>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
   </svg>
 )
 
 const Type = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <polyline points="4,7 4,4 20,4 20,7"></polyline>
-    <line x1="9" y1="20" x2="15" y2="20"></line>
-    <line x1="12" y1="4" x2="12" y2="20"></line>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
   </svg>
 )
 
 const FileMinus = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-    <polyline points="14,2 14,8 20,8"></polyline>
-    <line x1="8" y1="14" x2="16" y2="14"></line>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
   </svg>
 )
 
 const Unlock = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-    <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
   </svg>
 )
 
@@ -66,8 +56,6 @@ interface OptionsPanelProps {
 }
 
 export default function OptionsPanel({ options, onOptionsChange, onProcess, canProcess, images }: OptionsPanelProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false)
-
   // Analyze uploaded file types
   const fileTypes = {
     hasImages: images.some(img => img.file.type.startsWith('image/')),
@@ -77,31 +65,30 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
   }
 
   // Generate contextual operations based on uploaded files
-  const getAvailableOperations = () => {
+  const getAvailableOperations = useCallback(() => {
     const operations = []
 
     if (fileTypes.hasImages) {
       operations.push(
         { value: 'compress', label: 'Compress', desc: 'Reduce file size', icon: Zap },
         { value: 'resize', label: 'Resize', desc: 'Change dimensions', icon: Resize },
-        { value: 'convert', label: 'Convert', desc: 'Change format or convert to PDF', icon: FileImage },
+        { value: 'convert', label: 'Convert', desc: 'Change format', icon: FileImage },
         { value: 'watermark', label: 'Watermark', desc: 'Add watermark', icon: Type }
       )
     }
 
     if (fileTypes.hasPDFs) {
       operations.push(
-        { value: 'pdf-compress', label: 'Compress PDF', desc: 'Reduce PDF file size', icon: FileMinus },
-        { value: 'pdf-remove-password', label: 'Remove Password', desc: 'Unlock protected PDF', icon: Unlock }
+        { value: 'pdf-compress', label: 'Compress PDF', desc: 'Reduce PDF size', icon: FileMinus },
+        { value: 'pdf-remove-password', label: 'Unlock PDF', desc: 'Remove password', icon: Unlock }
       )
     }
 
     return operations
-  }
+  }, [fileTypes.hasImages, fileTypes.hasPDFs])
 
   const availableOperations = getAvailableOperations()
 
-  // Move updateOption before useEffect and wrap with useCallback
   const updateOption = useCallback((key: keyof ConversionOptions, value: any) => {
     const updatedOptions = { ...options, [key]: value }
     
@@ -127,774 +114,281 @@ export default function OptionsPanel({ options, onOptionsChange, onProcess, canP
   // Auto-select operation based on file types when files change
   useEffect(() => {
     if (images.length > 0 && availableOperations.length > 0) {
-      // Only auto-select if no operation is currently selected or if the current operation is not available
       const currentOperationAvailable = availableOperations.some(op => op.value === options.operation)
       
       if (!options.operation || !currentOperationAvailable) {
-        // Smart default selection
         if (fileTypes.hasPDFs && !fileTypes.hasImages) {
-          // Only PDFs -> select compress
           updateOption('operation', 'pdf-compress')
-        } else if (fileTypes.hasImages && !fileTypes.hasPDFs) {
-          // Only images -> select compress as default
-          updateOption('operation', 'compress')
-        } else if (fileTypes.hasImages && fileTypes.hasPDFs) {
-          // Mixed files -> select compress as default
+        } else {
           updateOption('operation', 'compress')
         }
       }
     }
-  }, [images.length, fileTypes.hasImages, fileTypes.hasPDFs, availableOperations, options.operation, updateOption])
+  }, [images.length, fileTypes.hasImages, fileTypes.hasPDFs, options.operation, updateOption, availableOperations])
 
   return (
-    <div className="card sticky top-4 h-fit">
-      <div className="mb-4 sm:mb-6">
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Processing Options</h2>
-        <p className="text-sm sm:text-base text-gray-600">Choose how you want to process your files</p>
+    <div className="card sticky top-6 h-fit backdrop-blur-xl bg-white/50 border-0 shadow-xl ring-1 ring-black/5">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+          <Settings className="w-5 h-5 text-primary-500" />
+          Settings
+        </h2>
+        <p className="text-sm text-gray-500">Configure processing options</p>
       </div>
 
       {images.length > 0 ? (
         <>
           {/* Operation Type */}
-          <div className="mb-4 sm:mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
-              Operation Type
-            </label>
+          <div className="mb-8">
+            <label className="label-text">Operation</label>
             
-            {/* File type indicator */}
-            {images.length > 0 && (
-              <div className="mb-3 text-xs sm:text-sm text-gray-600 p-2 bg-gray-50 rounded-lg">
-                {fileTypes.hasImages && fileTypes.hasPDFs 
-                  ? `${fileTypes.imageCount} image(s) and ${fileTypes.pdfCount} PDF(s) selected`
-                  : fileTypes.hasImages 
-                    ? `${fileTypes.imageCount} image(s) selected`
-                    : `${fileTypes.pdfCount} PDF(s) selected`
-                }
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 gap-2 sm:gap-3">
+            <div className="grid grid-cols-1 gap-2">
               {availableOperations.map((op) => {
                 const IconComponent = op.icon || Settings
+                const isSelected = options.operation === op.value
 
                 return (
                   <button
                     key={op.value}
                     onClick={() => updateOption('operation', op.value)}
-                    className={`flex items-center p-3 sm:p-4 rounded-lg border-2 transition-all text-left ${
-                      options.operation === op.value
-                        ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                    className={`flex items-center p-3 rounded-xl transition-all duration-200 text-left border relative overflow-hidden group ${
+                      isSelected
+                        ? 'border-primary-500 bg-primary-50/50 shadow-md shadow-primary-500/10'
+                        : 'border-transparent bg-white hover:bg-gray-50 hover:border-gray-200'
                     }`}
                   >
-                    <IconComponent className={`w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 flex-shrink-0 ${
-                      options.operation === op.value ? 'text-primary-600' : 'text-gray-400'
-                    }`} />
+                    <div className={`p-2 rounded-lg mr-3 transition-colors ${
+                      isSelected ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-gray-200'
+                    }`}>
+                      <IconComponent className="w-5 h-5" />
+                    </div>
                     <div className="min-w-0 flex-1">
-                      <div className={`font-medium text-sm sm:text-base ${
-                        options.operation === op.value ? 'text-primary-900' : 'text-gray-900'
+                      <div className={`font-semibold text-sm ${
+                        isSelected ? 'text-primary-900' : 'text-gray-900'
                       }`}>
                         {op.label}
                       </div>
-                      <div className="text-xs sm:text-sm text-gray-500">
+                      <div className="text-xs text-gray-500 truncate">
                         {op.desc}
                       </div>
                     </div>
+                    {isSelected && (
+                      <div className="absolute right-0 top-0 bottom-0 w-1 bg-primary-500" />
+                    )}
                   </button>
                 )
               })}
             </div>
           </div>
 
-          {/* Compression Options */}
-          {options.operation === 'compress' && (
-            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-3">Compression Settings</h3>
-              
-              <div className="space-y-3 sm:space-y-4">
-                {/* Compression Mode Selection */}
+          {/* Dynamic Options based on Operation */}
+          <div className="space-y-6">
+            
+            {/* COMPRESSION OPTIONS */}
+            {options.operation === 'compress' && (
+              <div className="bg-white/60 rounded-xl p-4 border border-gray-100 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Compression Mode
+                  <label className="label-text flex justify-between">
+                    <span>Compression Level</span>
+                    <span className="text-primary-600 font-semibold">{options.compressionQuality || 80}%</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onOptionsChange({
-                          ...options,
-                          targetSize: undefined,
-                          targetSizeUnit: undefined,
-                        })
-                      }}
-                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
-                        options.targetSize === undefined
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                      }`}
-                    >
-                      By Quality
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onOptionsChange({
-                          ...options,
-                          targetSize: 50,
-                          targetSizeUnit: 'KB',
-                        })
-                      }}
-                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
-                        options.targetSize !== undefined
-                          ? 'bg-blue-600 text-white border-blue-600'
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                      }`}
-                    >
-                      By File Size
-                    </button>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    value={options.compressionQuality || 80}
+                    onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-500"
+                  />
+                  <div className="flex justify-between text-xs text-gray-400 mt-2 font-medium px-1">
+                    <span>Max Compression</span>
+                    <span>Best Quality</span>
                   </div>
                 </div>
 
-                {/* Quality Mode */}
-                {options.targetSize === undefined && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Quality: {options.compressionQuality || 80}%
-                    </label>
-                    <input
-                      type="range"
-                      min="10"
-                      max="100"
-                      value={options.compressionQuality || 80}
-                      onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>Smallest</span>
-                      <span>Best Quality</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Target Size Mode */}
-                {options.targetSize !== undefined && (
-                  <div className="space-y-3">
-                    {/* Quick Presets */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Quick Presets
-                      </label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onOptionsChange({
-                              ...options,
-                              targetSize: 50,
-                              targetSizeUnit: 'KB',
-                            })
-                          }}
-                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
-                            options.targetSize === 50 && options.targetSizeUnit === 'KB'
-                              ? 'bg-green-600 text-white border-green-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          50 KB
-                          <span className="block text-xs opacity-75">Gov. Image</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onOptionsChange({
-                              ...options,
-                              targetSize: 100,
-                              targetSizeUnit: 'KB',
-                            })
-                          }}
-                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
-                            options.targetSize === 100 && options.targetSizeUnit === 'KB'
-                              ? 'bg-green-600 text-white border-green-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          100 KB
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onOptionsChange({
-                              ...options,
-                              targetSize: 200,
-                              targetSizeUnit: 'KB',
-                            })
-                          }}
-                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
-                            options.targetSize === 200 && options.targetSizeUnit === 'KB'
-                              ? 'bg-green-600 text-white border-green-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          200 KB
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onOptionsChange({
-                              ...options,
-                              targetSize: 500,
-                              targetSizeUnit: 'KB',
-                            })
-                          }}
-                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
-                            options.targetSize === 500 && options.targetSizeUnit === 'KB'
-                              ? 'bg-green-600 text-white border-green-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          500 KB
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Custom Size Input */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Custom Target Size
-                      </label>
-                      <div className="flex space-x-2">
-                        <input
-                          type="number"
-                          value={options.targetSize || ''}
-                          onChange={(e) => {
-                            const value = e.target.value === '' ? 0 : parseInt(e.target.value)
-                            updateOption('targetSize', value)
-                          }}
-                          className="input-field flex-1 text-sm"
-                          min="1"
-                          placeholder="Enter size"
-                        />
-                        <select
-                          value={options.targetSizeUnit}
-                          onChange={(e) => updateOption('targetSizeUnit', e.target.value)}
-                          className="input-field text-sm w-20"
-                        >
-                          <option value="KB">KB</option>
-                          <option value="MB">MB</option>
-                        </select>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        💡 Tip: Govt. sites often require images under 50 KB
-                      </p>
-                    </div>
-                  </div>
-                )}
+                <div className="pt-4 border-t border-gray-100">
+                   <label className="label-text mb-3">Quick Presets</label>
+                   <div className="grid grid-cols-2 gap-2">
+                     {[
+                       { size: 50, label: 'Govt. Sites' },
+                       { size: 100, label: 'Standard' },
+                       { size: 200, label: 'High Quality' },
+                       { size: 500, label: 'Max' },
+                     ].map((preset) => (
+                       <button
+                        key={preset.size}
+                        onClick={() => {
+                          onOptionsChange({
+                            ...options,
+                            targetSize: preset.size,
+                            targetSizeUnit: 'KB',
+                            compressionQuality: undefined
+                          })
+                        }}
+                        className={`px-3 py-2 text-xs font-medium rounded-lg border transition-all ${
+                          options.targetSize === preset.size
+                            ? 'bg-primary-600 text-white border-primary-600 shadow-lg shadow-primary-500/30'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+                        }`}
+                       >
+                         {preset.size} KB
+                         <span className="block opacity-75 text-[10px]">{preset.label}</span>
+                       </button>
+                     ))}
+                   </div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* PDF Compression Options */}
-          {options.operation === 'pdf-compress' && (
-            <div className="mb-6 p-4 bg-red-50 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-3">PDF Compression Settings</h3>
-              
-              <div className="space-y-4">
-                {/* Compression Mode Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Compression Mode
+            {/* PDF COMPRESSION */}
+            {options.operation === 'pdf-compress' && (
+              <div className="bg-white/60 rounded-xl p-4 border border-gray-100 space-y-4">
+                 <div>
+                  <label className="label-text flex justify-between">
+                    <span>Quality Level</span>
+                    <span className="text-primary-600 font-semibold">{options.compressionQuality || 75}%</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onOptionsChange({
-                          ...options,
-                          targetSize: undefined,
-                          targetSizeUnit: undefined,
-                        })
-                      }}
-                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
-                        options.targetSize === undefined
-                          ? 'bg-red-600 text-white border-red-600'
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                      }`}
-                    >
-                      By Quality
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onOptionsChange({
-                          ...options,
-                          targetSize: 200,
-                          targetSizeUnit: 'KB',
-                        })
-                      }}
-                      className={`px-3 py-2 text-sm rounded-md border transition-colors ${
-                        options.targetSize !== undefined
-                          ? 'bg-red-600 text-white border-red-600'
-                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                      }`}
-                    >
-                      By File Size
-                    </button>
-                  </div>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    value={options.compressionQuality || 75}
+                    onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
+                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-500"
+                  />
                 </div>
-
-                {/* Quality Mode */}
-                {options.targetSize === undefined && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Quality: {options.compressionQuality || 75}%
-                    </label>
-                    <input
-                      type="range"
-                      min="10"
-                      max="100"
-                      value={options.compressionQuality || 75}
-                      onChange={(e) => updateOption('compressionQuality', parseInt(e.target.value))}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-xs text-gray-500 mt-1">
-                      <span>Smallest File</span>
-                      <span>Best Quality</span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Target Size Mode */}
-                {options.targetSize !== undefined && (
-                  <div className="space-y-3">
-                    {/* Quick Presets */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Quick Presets
-                      </label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onOptionsChange({
-                              ...options,
-                              targetSize: 200,
-                              targetSizeUnit: 'KB',
-                            })
-                          }}
-                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
-                            options.targetSize === 200 && options.targetSizeUnit === 'KB'
-                              ? 'bg-green-600 text-white border-green-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          200 KB
-                          <span className="block text-xs opacity-75">Gov. PDF</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onOptionsChange({
-                              ...options,
-                              targetSize: 500,
-                              targetSizeUnit: 'KB',
-                            })
-                          }}
-                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
-                            options.targetSize === 500 && options.targetSizeUnit === 'KB'
-                              ? 'bg-green-600 text-white border-green-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          500 KB
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onOptionsChange({
-                              ...options,
-                              targetSize: 1,
-                              targetSizeUnit: 'MB',
-                            })
-                          }}
-                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
-                            options.targetSize === 1 && options.targetSizeUnit === 'MB'
-                              ? 'bg-green-600 text-white border-green-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          1 MB
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            onOptionsChange({
-                              ...options,
-                              targetSize: 2,
-                              targetSizeUnit: 'MB',
-                            })
-                          }}
-                          className={`px-3 py-2 text-xs sm:text-sm rounded-md border transition-colors ${
-                            options.targetSize === 2 && options.targetSizeUnit === 'MB'
-                              ? 'bg-green-600 text-white border-green-600'
-                              : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          2 MB
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Custom Size Input */}
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Custom Target Size
-                      </label>
-                      <div className="grid grid-cols-2 gap-2">
-                        <input
-                          type="number"
-                          min="0.1"
-                          step="0.1"
-                          value={options.targetSize || ''}
-                          onChange={(e) => {
-                            const value = e.target.value === '' ? 0 : parseFloat(e.target.value)
-                            updateOption('targetSize', value)
-                          }}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                          placeholder="Enter size"
-                        />
-                        <select
-                          value={options.targetSizeUnit || 'MB'}
-                          onChange={(e) => updateOption('targetSizeUnit', e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                        >
-                          <option value="KB">KB</option>
-                          <option value="MB">MB</option>
-                        </select>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        💡 Tip: Govt. sites often require PDFs under 200 KB
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex items-center space-x-2">
+                
+                <div className="flex items-center space-x-2 pt-2">
                   <input
                     type="checkbox"
                     id="optimizeImages"
                     checked={options.optimizeImages || false}
                     onChange={(e) => updateOption('optimizeImages', e.target.checked)}
-                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
+                    className="w-4 h-4 text-primary-600 rounded focus:ring-primary-500 border-gray-300"
                   />
-                  <label htmlFor="optimizeImages" className="text-sm text-gray-700 cursor-pointer">
-                    Optimize embedded images
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* PDF Remove Password Options */}
-          {options.operation === 'pdf-remove-password' && (
-            <div className="mb-6 p-4 bg-yellow-50 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-3">PDF Unlock Settings</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    PDF Password <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    value={options.pdfPassword || ''}
-                    onChange={(e) => updateOption('pdfPassword', e.target.value)}
-                    className="input-field"
-                    placeholder="Enter current password"
-                    required
-                  />
-                   <p className="text-xs text-gray-500 mt-1">
-                    <span className="text-red-500">Required:</span> The current password is needed to unlock the PDF.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Resize Options */}
-          {options.operation === 'resize' && (
-            <div className="mb-6 p-4 bg-green-50 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-3">Resize Settings</h3>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Width (px)
-                    </label>
-                    <input
-                      type="number"
-                      value={options.resizeWidth || ''}
-                      onChange={(e) => updateOption('resizeWidth', e.target.value ? parseInt(e.target.value) : undefined)}
-                      className="input-field"
-                      placeholder="Auto"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Height (px)
-                    </label>
-                    <input
-                      type="number"
-                      value={options.resizeHeight || ''}
-                      onChange={(e) => updateOption('resizeHeight', e.target.value ? parseInt(e.target.value) : undefined)}
-                      className="input-field"
-                      placeholder="Auto"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="maintainAspect"
-                    checked={options.maintainAspectRatio !== false}
-                    onChange={(e) => updateOption('maintainAspectRatio', e.target.checked)}
-                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
-                  />
-                  <label htmlFor="maintainAspect" className="text-sm text-gray-700 cursor-pointer">
-                    Maintain aspect ratio
-                  </label>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="cropToFit"
-                    checked={options.cropToFit || false}
-                    onChange={(e) => updateOption('cropToFit', e.target.checked)}
-                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
-                  />
-                  <label htmlFor="cropToFit" className="text-sm text-gray-700 cursor-pointer">
-                    Crop to fit (instead of letterbox)
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Format Conversion Options */}
-          {options.operation === 'convert' && (
-            <div className="mb-6 p-4 bg-purple-50 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-3">Format Settings</h3>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Output Format
-                </label>
-                <select
-                  value={options.outputFormat || 'jpg'}
-                  onChange={(e) => updateOption('outputFormat', e.target.value)}
-                  className="input-field"
-                >
-                  <option value="jpg">JPEG</option>
-                  <option value="png">PNG</option>
-                  <option value="webp">WebP</option>
-                  {fileTypes.hasImages && (
-                    <option value="pdf">PDF (Convert images to PDF)</option>
-                  )}
-                </select>
-              </div>
-
-              {/* PDF specific options when converting to PDF */}
-              {options.outputFormat === 'pdf' && (
-                <div className="mt-4 space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Page Layout
-                    </label>
-                    <select
-                      value={options.pdfLayout || 'fit'}
-                      onChange={(e) => updateOption('pdfLayout', e.target.value)}
-                      className="input-field"
-                    >
-                      <option value="fit">Fit to page</option>
-                      <option value="original">Original size</option>
-                      <option value="fill">Fill page</option>
-                    </select>
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Page Size
-                    </label>
-                    <select
-                      value={options.pdfPageSize || 'A4'}
-                      onChange={(e) => updateOption('pdfPageSize', e.target.value)}
-                      className="input-field"
-                    >
-                      <option value="A4">A4</option>
-                      <option value="Letter">Letter</option>
-                      <option value="Legal">Legal</option>
-                      <option value="A3">A3</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Images Per Page
-                    </label>
-                    <select
-                      value={options.pdfImagesPerPage || 1}
-                      onChange={(e) => updateOption('pdfImagesPerPage', parseInt(e.target.value) as 1 | 2)}
-                      className="input-field"
-                    >
-                      <option value={1}>One image per page</option>
-                      <option value={2}>Two images side-by-side ((Best for ID Cards))</option>
-                    </select>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {options.pdfImagesPerPage === 2 
-                        ? '📄 Perfect for ID cards! Front and back on the same page.'
-                        : '📄 Each image will be on a separate page.'}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Watermark Options */}
-          {options.operation === 'watermark' && (
-            <div className="mb-6 p-4 bg-yellow-50 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-3">Watermark Settings</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Watermark Text
-                  </label>
-                  <input
-                    type="text"
-                    value={options.watermarkText || ''}
-                    onChange={(e) => updateOption('watermarkText', e.target.value)}
-                    className="input-field"
-                    placeholder="Enter watermark text"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Position
-                  </label>
-                  <select
-                    value={options.watermarkPosition || 'bottom-right'}
-                    onChange={(e) => updateOption('watermarkPosition', e.target.value)}
-                    className="input-field"
-                  >
-                    <option value="top-left">Top Left</option>
-                    <option value="top-right">Top Right</option>
-                    <option value="center">Center</option>
-                    <option value="bottom-left">Bottom Left</option>
-                    <option value="bottom-right">Bottom Right</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Text Color
-                  </label>
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="color"
-                      value={options.watermarkColor || '#ffffff'}
-                      onChange={(e) => updateOption('watermarkColor', e.target.value)}
-                      className="w-12 h-10 rounded border border-gray-300 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={options.watermarkColor || '#ffffff'}
-                      onChange={(e) => updateOption('watermarkColor', e.target.value)}
-                      className="input-field flex-1"
-                      placeholder="#ffffff"
-                      pattern="^#[0-9A-Fa-f]{6}$"
-                    />
-                  </div>
-                  <div className="mt-1 text-xs text-gray-500">
-                    Choose color or enter hex code (e.g., #ffffff for white)
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Advanced Options */}
-          <div className="mb-6">
-            <button
-              onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex items-center text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
-              <Settings className="w-4 h-4 mr-1" />
-              Advanced Options
-            </button>
-
-            {showAdvanced && (
-              <div className="mt-3 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="removeMetadata"
-                    checked={options.removeMetadata || false}
-                    onChange={(e) => updateOption('removeMetadata', e.target.checked)}
-                    className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2"
-                  />
-                  <label htmlFor="removeMetadata" className="text-sm text-gray-700 cursor-pointer">
-                    Remove metadata (EXIF/GPS data)
+                  <label htmlFor="optimizeImages" className="text-sm text-gray-700">
+                    Optimize images inside PDF
                   </label>
                 </div>
               </div>
             )}
+
+            {/* RESIZE OPTIONS */}
+            {options.operation === 'resize' && (
+              <div className="bg-white/60 rounded-xl p-4 border border-gray-100 space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="label-text">Width</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={options.resizeWidth || ''}
+                        onChange={(e) => updateOption('resizeWidth', e.target.value ? parseInt(e.target.value) : undefined)}
+                        className="input-field"
+                        placeholder="Auto"
+                      />
+                      <span className="absolute right-3 top-2.5 text-xs text-gray-400 font-medium">PX</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="label-text">Height</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        value={options.resizeHeight || ''}
+                        onChange={(e) => updateOption('resizeHeight', e.target.value ? parseInt(e.target.value) : undefined)}
+                        className="input-field"
+                        placeholder="Auto"
+                      />
+                      <span className="absolute right-3 top-2.5 text-xs text-gray-400 font-medium">PX</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="maintainAspect"
+                      checked={options.maintainAspectRatio !== false}
+                      onChange={(e) => updateOption('maintainAspectRatio', e.target.checked)}
+                      className="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
+                    />
+                    <label htmlFor="maintainAspect" className="text-sm text-gray-700">Maintain aspect ratio</label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="cropToFit"
+                      checked={options.cropToFit || false}
+                      onChange={(e) => updateOption('cropToFit', e.target.checked)}
+                      className="rounded border-gray-300 text-primary-600 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50"
+                    />
+                    <label htmlFor="cropToFit" className="text-sm text-gray-700">Crop to fit</label>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* CONVERT OPTIONS */}
+            {options.operation === 'convert' && (
+               <div className="bg-white/60 rounded-xl p-4 border border-gray-100 space-y-4">
+                 <div>
+                   <label className="label-text">Output Format</label>
+                   <select
+                    value={options.outputFormat || 'jpg'}
+                    onChange={(e) => updateOption('outputFormat', e.target.value)}
+                    className="input-field"
+                   >
+                     <option value="jpg">JPEG (Photo)</option>
+                     <option value="png">PNG (Transparent)</option>
+                     <option value="webp">WebP (Modern)</option>
+                     {fileTypes.hasImages && <option value="pdf">PDF Document</option>}
+                   </select>
+                 </div>
+               </div>
+            )}
+            
+            {/* PDF PASSWORD REMOVE */}
+            {options.operation === 'pdf-remove-password' && (
+              <div className="bg-white/60 rounded-xl p-4 border border-red-100 space-y-4">
+                 <div>
+                   <label className="label-text text-gray-800">File Password</label>
+                   <input
+                    type="password"
+                    value={options.pdfPassword || ''}
+                    onChange={(e) => updateOption('pdfPassword', e.target.value)}
+                    className="input-field border-red-200 focus:border-red-500 focus:ring-red-500/20"
+                    placeholder="Enter password to unlock"
+                   />
+                   <p className="text-xs text-red-500 mt-1.5 flex items-center">
+                     <span className="w-1 h-1 bg-red-500 rounded-full mr-1.5"></span>
+                     Required to process file
+                   </p>
+                 </div>
+              </div>
+            )}
+
           </div>
 
-          {/* Process Button */}
-          <button
-            onClick={onProcess}
-            disabled={!canProcess}
-            className={`w-full py-3 sm:py-4 px-4 rounded-lg font-medium transition-all text-sm sm:text-base ${
-              canProcess
-                ? 'bg-primary-500 hover:bg-primary-600 text-white'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            <div className="flex items-center justify-center">
-              {(() => {
-                let IconComponent = Settings
-                if (options.operation === 'compress') IconComponent = Zap
-                if (options.operation === 'resize') IconComponent = Resize
-                if (options.operation === 'convert') IconComponent = FileImage
-                if (options.operation === 'pdf-compress') IconComponent = FileMinus
-                if (options.operation === 'pdf-remove-password') IconComponent = Unlock
-                if (options.operation === 'watermark') IconComponent = Type
-                return <IconComponent className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-              })()}
-              Process Files
-            </div>
-          </button>
-
-          {!canProcess && (
-            <p className="text-xs sm:text-sm text-gray-500 text-center mt-2">
-              {images.length === 0 
-                ? 'Upload files to start processing'
-                : options.operation === 'pdf-remove-password' && (!options.pdfPassword || options.pdfPassword.trim().length === 0)
-                  ? 'Enter PDF password to continue'
-                  : 'Upload files to start processing'
-              }
-            </p>
-          )}
+          <div className="mt-8">
+            <button
+              onClick={onProcess}
+              disabled={!canProcess}
+              className={`w-full py-4 px-6 rounded-xl text-white font-bold text-lg shadow-xl transition-all duration-300 transform hover:-translate-y-1 ${
+                canProcess
+                  ? 'bg-gradient-to-r from-primary-600 to-indigo-600 hover:shadow-primary-500/30'
+                  : 'bg-gray-300 cursor-not-allowed'
+              }`}
+            >
+              {options.operation === 'pdf-remove-password' ? 'Unlock PDF' : 'Start Processing'}
+            </button>
+          </div>
         </>
       ) : (
-        <div className="text-center py-12 text-gray-500">
-          <FileImage className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Files Selected</h3>
-          <p>Upload files to see processing options</p>
+        <div className="text-center py-12 text-gray-400 bg-white/50 rounded-xl border-dashed border-2 border-gray-100">
+           <p>Upload files to configure options</p>
         </div>
       )}
     </div>

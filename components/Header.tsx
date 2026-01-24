@@ -5,173 +5,81 @@ import { useState, useEffect } from 'react'
 // Simple icon components
 const Camera = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-    <circle cx="12" cy="13" r="4"></circle>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
   </svg>
 )
 
-const Settings = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="3"></circle>
-    <path d="M12 1v6m0 6v6"></path>
-  </svg>
-)
-
-const Download = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-    <polyline points="7,10 12,15 17,10"></polyline>
-    <line x1="12" y1="15" x2="12" y2="3"></line>
-  </svg>
-)
-
-const Menu = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <line x1="3" y1="6" x2="21" y2="6"></line>
-    <line x1="3" y1="12" x2="21" y2="12"></line>
-    <line x1="3" y1="18" x2="21" y2="18"></line>
-  </svg>
-)
-
-const X = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
+const Github = ({ className }: { className?: string }) => (
+  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
   </svg>
 )
 
 const Info = ({ className }: { className?: string }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="10"></circle>
-    <line x1="12" y1="16" x2="12" y2="12"></line>
-    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+)
+
+const X = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
   </svg>
 )
 
 export default function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
 
-  // Handle Escape key to close modal
   useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setShowAbout(false)
-        setIsMobileMenuOpen(false)
-      }
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10)
     }
-
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 max-w-7xl">
+    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      scrolled ? 'bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100' : 'bg-transparent'
+    }`}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 max-w-7xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="bg-primary-500 p-2 rounded-lg">
-              <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="bg-gradient-to-br from-primary-500 to-primary-700 p-2 rounded-xl shadow-lg shadow-primary-500/20">
+              <Camera className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-bold text-gray-900">File Converter</h1>
-              <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">Professional Image Processing</p>
+              <h1 className="text-xl font-bold text-gray-900 tracking-tight">ConvertPro</h1>
             </div>
           </div>
           
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6">
-            <a href="#features" className="text-gray-400 cursor-not-allowed pointer-events-none">
-              Features
-            </a>
-            <a href="#pricing" className="text-gray-400 cursor-not-allowed pointer-events-none">
-              Pricing
-            </a>
-            <a href="#support" className="text-gray-400 cursor-not-allowed pointer-events-none">
-              Support
-            </a>
+          <nav className="flex items-center space-x-4">
             <button 
               onClick={() => setShowAbout(true)}
-              className="text-gray-600 hover:text-gray-900 transition-colors flex items-center"
+              className="text-gray-600 hover:text-primary-600 transition-colors flex items-center text-sm font-medium"
             >
-              <Info className="w-4 h-4 mr-1" />
+              <Info className="w-5 h-5 mr-1.5" />
               About
             </button>
+            <a 
+              href="https://github.com/manovignesh46" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-400 hover:text-gray-900 transition-colors"
+            >
+              <Github className="w-6 h-6" />
+            </a>
           </nav>
-          
-          {/* Desktop Buttons */}
-          <div className="hidden sm:flex items-center space-x-2 sm:space-x-3">
-            <button className="btn-secondary text-xs sm:text-sm px-2 sm:px-4 py-2 opacity-50 cursor-not-allowed" disabled>
-              <Settings className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Settings</span>
-            </button>
-            <button className="btn-primary text-xs sm:text-sm px-2 sm:px-4 py-2 opacity-50 cursor-not-allowed" disabled>
-              <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Download</span>
-            </button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="sm:hidden p-2 text-gray-600 hover:text-gray-900"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
         </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="sm:hidden mt-4 pt-4 border-t border-gray-200">
-            <nav className="flex flex-col space-y-3 mb-4">
-              <a href="#features" className="text-gray-400 cursor-not-allowed pointer-events-none py-2">
-                Features
-              </a>
-              <a href="#pricing" className="text-gray-400 cursor-not-allowed pointer-events-none py-2">
-                Pricing
-              </a>
-              <a href="#support" className="text-gray-400 cursor-not-allowed pointer-events-none py-2">
-                Support
-              </a>
-              <button 
-                onClick={() => {
-                  setShowAbout(true)
-                  setIsMobileMenuOpen(false)
-                }}
-                className="text-gray-600 hover:text-gray-900 transition-colors py-2 flex items-center"
-              >
-                <Info className="w-4 h-4 mr-2" />
-                About
-              </button>
-            </nav>
-            
-            <div className="flex flex-col space-y-2">
-              <button className="btn-secondary text-sm px-4 py-3 justify-center opacity-50 cursor-not-allowed" disabled>
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </button>
-              <button className="btn-primary text-sm px-4 py-3 justify-center opacity-50 cursor-not-allowed" disabled>
-                <Download className="w-4 h-4 mr-2" />
-                Download App
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* About Modal */}
       {showAbout && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                <Info className="w-6 h-6 mr-2 text-primary-500" />
-                About
-              </h2>
+        <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 animate-scale-in">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-gray-900">About ConvertPro</h2>
               <button
                 onClick={() => setShowAbout(false)}
                 className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100"
@@ -180,33 +88,22 @@ export default function Header() {
               </button>
             </div>
             
-            <div className="space-y-4">
-              <div className="text-center py-6">
-                <div className="bg-primary-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Camera className="w-10 h-10 text-primary-600" />
+            <div className="space-y-6">
+              <div className="text-center py-4">
+                <div className="bg-primary-50 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Camera className="w-12 h-12 text-primary-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">File Converter Pro</h3>
-                <p className="text-gray-600 mb-4">Professional Image Processing Tool</p>
-                
-                <div className="border-t border-gray-200 pt-4 mt-4">
-                  <p className="text-sm text-gray-500 mb-2">Developed by:</p>
-                  <p className="text-lg font-semibold text-primary-600">Manovignesh</p>
-                </div>
-              </div>
-              
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <p className="text-xs text-gray-500">
-                  © 2025 File Converter Pro. All rights reserved.
+                <p className="text-gray-600 mb-6 leading-relaxed">
+                  ConvertPro is a powerful, secure, and free online tool for all your file manipulation needs. 
+                  We prioritize privacy by processing files securely.
                 </p>
+                
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <p className="text-sm text-gray-500 mb-1">Developed with ❤️ by</p>
+                  <p className="text-lg font-bold text-gray-900">Manovignesh</p>
+                </div>
               </div>
             </div>
-            
-            <button
-              onClick={() => setShowAbout(false)}
-              className="w-full mt-4 btn-primary"
-            >
-              Close
-            </button>
           </div>
         </div>
       )}
