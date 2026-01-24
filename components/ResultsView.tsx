@@ -234,8 +234,8 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
                 className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group"
               >
                 {/* File Preview */}
-                <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
-                  {!hasError ? (
+                <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden group-hover:bg-gray-100 transition-colors">
+                  {!hasError && !fileName.toLowerCase().endsWith('.pdf') ? (
                     <img
                       src={`/api/preview/${encodeURIComponent(fileName)}`}
                       alt={formatFileName(file)}
@@ -244,11 +244,18 @@ export default function ResultsView({ files, onStartNew, isCleaningUp = false }:
                       onLoad={() => handleImageLoad(fileName)}
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gray-50 flex items-center justify-center p-6 text-center">
-                      <div className="text-gray-300">
-                        <FileImage className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                        <span className="text-xs">No Preview</span>
-                      </div>
+                    <div className="absolute inset-0 flex items-center justify-center p-6 text-center">
+                      {fileName.toLowerCase().endsWith('.pdf') ? (
+                         <div className="transform transition-transform duration-300 group-hover:scale-110">
+                           <FileImage className="w-16 h-16 text-red-500 mx-auto mb-3 drop-shadow-sm" />
+                           <span className="block text-xs font-bold text-red-600 uppercase tracking-widest bg-red-50 px-2 py-1 rounded-full">PDF Document</span>
+                         </div>
+                      ) : (
+                        <div className="text-gray-300">
+                          <FileImage className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                          <span className="text-xs">No Preview</span>
+                        </div>
+                      )}
                     </div>
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
