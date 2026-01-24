@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: file-converter-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "9691:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongodb:27017/file-converter
+    depends_on:
+      - mongodb
+
+  mongodb:
+    container_name: file-converter-mongodb
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

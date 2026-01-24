@@ -181,15 +181,17 @@ file-converter/
 3. Set environment variables in Vercel dashboard
 4. Deploy automatically
 
-### Docker
-1. Build Docker image:
+### Docker (Recommended)
+1. Start the application stack:
    ```bash
-   docker build -t file-converter .
+   docker compose up -d
    ```
 
-2. Run container:
+2. Access the application at `http://localhost:3000`
+
+3. To stop the application:
    ```bash
-   docker run -p 3000:3000 file-converter
+   docker compose down
    ```
 
 ## 🧪 Testing
