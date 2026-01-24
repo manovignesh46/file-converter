@@ -1,9 +1,11 @@
-import { decrypt } from 'node-qpdf2'
+import { exec } from 'child_process'
+import { promisify } from 'util'
 import { PDFDocument } from 'pdf-lib-with-encrypt'
 import { v4 as uuidv4 } from 'uuid'
 import path from 'path'
 import fs from 'fs/promises'
 
+const execAsync = promisify(exec)
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'processed')
 
 export class PdfPasswordService {
@@ -32,11 +34,25 @@ export class PdfPasswordService {
       await fs.writeFile(tempInputPath, buffer)
 
       // Use QPDF to decrypt the PDF
-      await decrypt({
-        input: tempInputPath,
-        output: tempDecryptedPath,
-        password: options.password || ''
-      })
+      // qpdf --decrypt --password=PASSWORD input output
+      // Exit code 0 means success
+      // Exit code 3 means success with warnings (which we want to allow)
+      const password = options.password || ''
+      // Escape password for shell to prevent command injection or issues with special characters
+      // We use single quotes for the password and escape existing single quotes
+      const escapedPassword = password.replace(/'/g, "'\\''")
+      
+      try {
+        await execAsync(`qpdf --decrypt --password='${escapedPassword}' "${tempInputPath}" "${tempDecryptedPath}"`)
+      } catch (error: any) {
+        // Check if it's a warning exit code (3)
+        if (error.code === 3) {
+          console.warn('qpdf completed with warnings:', error.stderr)
+        } else {
+          // If it's not a warning, rethrow
+          throw error
+        }
+      }
 
       // Read the decrypted PDF
       const decryptedBuffer = await fs.readFile(tempDecryptedPath)
