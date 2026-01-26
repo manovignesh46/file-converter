@@ -4,10 +4,10 @@ import fs from 'fs/promises'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { fileName: string } }
+  { params }: { params: Promise<{ fileName: string }> }
 ) {
   try {
-    const fileName = params.fileName
+    const { fileName } = await params
     const filePath = path.join(process.cwd(), 'public', 'processed', fileName)
 
     // Check if file exists

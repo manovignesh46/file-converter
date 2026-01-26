@@ -7,9 +7,9 @@ const UPLOAD_DIR = path.join(process.cwd(), 'public', 'processed')
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { fileName: string } }
+  { params }: { params: Promise<{ fileName: string }> }
 ) {
-  const { fileName } = params
+  const { fileName } = await params
 
   if (!fileName) {
     return NextResponse.json({ error: 'File name is required' }, { status: 400 })

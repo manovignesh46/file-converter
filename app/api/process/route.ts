@@ -7,9 +7,6 @@ import { ImageToPdfService } from '../../../services/imageToPdfService'
 import { FormatConversionService } from '../../../services/formatConversionService'
 import { PdfCompressionService } from '../../../services/pdfCompressionService'
 import { PdfPasswordService } from '../../../services/pdfPasswordService'
-import connectDB from '../../../lib/mongodb'
-import { Job } from '../../../lib/models'
-import { v4 as uuidv4 } from 'uuid'
 
 // Configure multer for memory storage
 const upload = multer({
@@ -23,8 +20,6 @@ const uploadMiddleware = promisify(upload.array('images'))
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB()
-
     // Parse form data
     const formData = await request.formData()
     const files = formData.getAll('images') as File[]
@@ -35,36 +30,12 @@ export async function POST(request: NextRequest) {
     }
 
     const options = JSON.parse(optionsStr)
-    const jobId = uuidv4()
-
-    // Create job record
-    const job = new Job({
-      id: jobId,
-      status: 'processing',
-      operation: options.operation,
-      options,
-      inputFiles: files.map(file => ({
-        originalName: file.name,
-        fileName: file.name,
-        size: file.size,
-        mimeType: file.type,
-      })),
-    })
-    await job.save()
 
     // Process files based on operation
-    const results = await processFiles(files, options, jobId)
-
-    // Update job status
-    job.status = 'completed'
-    job.progress = 100
-    job.outputFiles = results.files
-    job.completedAt = new Date()
-    await job.save()
+    const results = await processFiles(files, options)
 
     return NextResponse.json({
       success: true,
-      jobId,
       files: results.files,
       message: 'Processing completed successfully',
     })
@@ -78,7 +49,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function processFiles(files: File[], options: any, jobId: string) {
+async function processFiles(files: File[], options: any) {
   const outputFiles: any[] = []
 
   switch (options.operation) {
